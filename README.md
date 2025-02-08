@@ -29,4 +29,4 @@ Tested on a [Debian](https://www.debian.org/) 12.9.0 and [Ubuntu server](https:/
   ```
 - Follow instructions
 
-Please report if you encounter any issue.
+Please report [here](https://discord.com/channels/685692524442026020/1337758742447652895) if you encounter any issue.
