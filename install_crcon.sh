@@ -212,24 +212,24 @@ setup_env_variables() {
     read -p "Enter HLL_PASSWORD: " HLL_PASSWORD
 
     # Replacing the values in the .env file
-    sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
-    sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" $HOME_DIR/hll_rcon_tool/.env
-    sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" $HOME_DIR/hll_rcon_tool/.env
-    sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" $HOME_DIR/hll_rcon_tool/.env
-    sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
+    $SUDO sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" $HOME_DIR/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" $HOME_DIR/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" $HOME_DIR/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
 }
 
 # Function to install curl
 install_curl() {
   printf "\033[31mX\033[0m curl is not installed. Attempting to install it...\n"
   if [[ -f "/etc/debian_version" ]]; then
-    sudo apt update && sudo apt install -y curl
+    $SUDO apt update && sudo apt install -y curl
   elif [[ -f "/etc/redhat-release" ]]; then
-    sudo yum install -y curl
+    $SUDO yum install -y curl
   elif [[ -f "/etc/arch-release" ]]; then
-    sudo pacman -Syu --noconfirm curl
+    $SUDO pacman -Syu --noconfirm curl
   elif [[ -f "/etc/alpine-release" ]]; then
-    sudo apk add --no-cache curl
+    $SUDO apk add --no-cache curl
   else
     printf "\033[31mX\033[0m Unsupported Linux distribution. Please install curl manually.\n"
     exit 1
