@@ -11,7 +11,7 @@ Tested on a [Debian](https://www.debian.org/) 12.9.0 and [Ubuntu server](https:/
 ## Install
 
 - Log into an SSH session on your Linux VPS  
-- Make sure you're in your user default home :  
+- Make sure you're in your user's default home folder :  
   ```shell
   cd
   ```  
