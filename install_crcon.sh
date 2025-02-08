@@ -212,11 +212,11 @@ setup_env_variables() {
     read -p "Enter HLL_PASSWORD: " HLL_PASSWORD
 
     # Replacing the values in the .env file
-    sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" /root/hll_rcon_tool/.env
-    sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" /root/hll_rcon_tool/.env
-    sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" /root/hll_rcon_tool/.env
-    sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" /root/hll_rcon_tool/.env
-    sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" /root/hll_rcon_tool/.env
+    sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
+    sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" $HOME_DIR/hll_rcon_tool/.env
+    sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" $HOME_DIR/hll_rcon_tool/.env
+    sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" $HOME_DIR/hll_rcon_tool/.env
+    sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
 }
 
 # Function to install curl
@@ -287,7 +287,7 @@ printf "└───────────────────────
 $SUDO git clone https://github.com/MarechJ/hll_rcon_tool.git
 
 # Enter CRCON folder
-cd /root/hll_rcon_tool
+cd $HOME_DIR/hll_rcon_tool
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Set configuration files                                   │\n"
