@@ -6,9 +6,11 @@
 # The script will install Git, Docker, Docker Compose, and CRCON.
 # It will also prompt the user to set the necessary environment variables.
 # 
-# Supported Linux distributions:
-# - Ubuntu 20.04 LTS
-# - Debian 10
+# Supported Linux distributions (tested):
+# - Ubuntu 20.04 LTS / 24.04.1
+# - Debian 10 / 12.9.0
+# 
+# Supported Linux distributions (untested):
 # - CentOS 8
 # - RHEL 8
 # - Fedora 34
