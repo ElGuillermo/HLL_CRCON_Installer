@@ -1,5 +1,5 @@
 # HLL_CRCON_Installer
-Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool)
+Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool) on a fresh Linux system.
 
 ## Features
 - Check for requirements (Git, Docker, Docker compose plugin) and installs them if needed
