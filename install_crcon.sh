@@ -78,15 +78,19 @@ install_docker() {
     else
         printf "└ \033[31mX\033[0m Docker is not installed. Proceeding with the installation...\n"
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
-            $SUDO apt-get update -y
-            $SUDO apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-            # curl -fsSL https://download.docker.com/linux/debian/gpg | $SUDO gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+            # Add Docker's official GPG key:
+            $SUDO apt-get update
+            $SUDO apt-get install ca-certificates curl
+            $SUDO install -m 0755 -d /etc/apt/keyrings
             $SUDO curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
             $SUDO chmod a+r /etc/apt/keyrings/docker.asc
-            # echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | $SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            $SUDO apt-get update -y
-            $SUDO apt-get install -y docker-ce docker-ce-cli containerd.io
+
+            # Add the repository to Apt sources:
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | $SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+            # Update repos and install
+            $SUDO apt-get update
+            $SUDO apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             $SUDO yum install -y yum-utils
             $SUDO yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
