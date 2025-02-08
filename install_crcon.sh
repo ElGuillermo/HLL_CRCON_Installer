@@ -314,15 +314,15 @@ if [[ -n "$WAN_IP" ]]; then
 
   # update CRCON settings "server_url"
   SQL="UPDATE public.user_config SET value = jsonb_set(value, '{server_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_RconServerSettingsUserConfig';"
-  docker compose exec -it postgres psql -U rcon -c "$SQL"
+  $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
   # update Scorebot "base_api_url"
   SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_api_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-  docker compose exec -it postgres psql -U rcon -c "$SQL"
+  $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
   # update Scorebot "base_scoreboard_url"
   SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-  docker compose exec -it postgres psql -U rcon -c "$SQL"
+  $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
   # restart CRCON
   $SUDO docker compose down
