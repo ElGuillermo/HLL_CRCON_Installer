@@ -32,10 +32,10 @@ Tested on :
     ./install_crcon.sh
     ```
 6. Follow instructions  
-   You'll need to have some informations handy :
+   You'll need to have some informations handy.  
+   These are provided by your game server provider (Qonzer, GTX, GPortal, etc)  
    - HLL game server RCON IP
    - HLL game server RCON port
-   - HLL game server RCON password  
-   These are provided by your game server provider (Qonzer, GTX, GPortal, etc)
+   - HLL game server RCON password
 
 Please report [here](https://discord.com/channels/685692524442026020/1337758742447652895) if you encounter any issue.
