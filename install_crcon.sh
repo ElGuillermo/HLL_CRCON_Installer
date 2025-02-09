@@ -66,7 +66,10 @@ remove_old_docker() {
             $SUDO apt-get remove -y $pkg || true
         done
         printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
-    elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
+    elif [[ $DISTRO == "fedora" ]]; then
+        $SUDO dnf remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine || true
+        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+    elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
         $SUDO yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine || true
         printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
     else
@@ -97,7 +100,12 @@ install_docker() {
             # Update repos and install
             $SUDO apt-get update
             $SUDO apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-        elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
+        elif [[ $DISTRO == "fedora" ]]; then
+            $SUDO dnf -y install dnf-plugins-core
+            $SUDO dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            $SUDO dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            $SUDO systemctl enable --now docker
+        elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             $SUDO yum install -y yum-utils
             $SUDO yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
             $SUDO yum install -y docker-ce docker-ce-cli containerd.io
