@@ -2,9 +2,9 @@
 Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool) on a fresh Linux system.
 
 ## Features
-- Checkd for requirements (Git, Docker, Docker compose plugin) and installs them if needed
-- Downloadd the latest CRCON release
-- Configured the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
+- Checks for requirements (Git, Docker, Docker compose plugin) and installs them if needed
+- Downloads the latest CRCON release
+- Configures the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
 
 Tested on :  
 - [Debian](https://www.debian.org/) 12.9.0
