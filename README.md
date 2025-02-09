@@ -38,4 +38,7 @@ Tested on :
    - HLL game server RCON port
    - HLL game server RCON password
 
-Please report [here](https://discord.com/channels/685692524442026020/1337758742447652895) if you encounter any issue.
+## Troubleshooting and reviews
+
+Please report [here](https://discord.com/channels/685692524442026020/1337758742447652895) if you encounter any issue.  
+Success stories are also welcomed ! ;)
