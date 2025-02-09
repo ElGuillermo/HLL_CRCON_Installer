@@ -9,12 +9,12 @@
 # 
 # Supported Linux distributions
 # (tested)
-#   - Ubuntu 20.04 LTS / 24.04.1
 #   - Debian 10 / 12.9.0
+#   - Ubuntu 20.04 LTS / 24.04.1
+#   - Fedora server 41-1.4
 # (untested)
 #   - CentOS 8
 #   - RHEL 8
-#   - Fedora 34
 #   - Rocky Linux 8.4
 #   - AlmaLinux 8.4
 
