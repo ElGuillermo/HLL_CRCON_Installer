@@ -10,24 +10,24 @@ Tested on a [Debian](https://www.debian.org/) 12.9.0 and [Ubuntu server](https:/
 
 ## Install
 
-- Log into an SSH session on your Linux VPS  
+1. Log into an SSH session on your Linux VPS  
   :warning: Your user must have superuser permissions ("root") or member of the "sudo" group.  
-- Make sure you're in your user's default home folder :  
+2. Make sure you're in your user's default home folder :  
   ```shell
   cd
   ```  
-- Download the script :  
+3. Download the script :  
   ```shell
   wget https://raw.githubusercontent.com/ElGuillermo/HLL_CRCON_Installer/refs/heads/main/install_crcon.sh
   ```  
-- Make it executable :
+4. Make it executable :
   ```shell
   chmod +x install_crcon.sh
   ```
-- Launch it :
+5. Launch it :
   ```shell
   ./install_crcon.sh
   ```
-- Follow instructions
+6. Follow instructions
 
 Please report [here](https://discord.com/channels/685692524442026020/1337758742447652895) if you encounter any issue.
