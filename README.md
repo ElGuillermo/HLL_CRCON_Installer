@@ -11,7 +11,7 @@ Tested on a [Debian](https://www.debian.org/) 12.9.0 and [Ubuntu server](https:/
 ## Install
 
 1. Log into an SSH session on your Linux VPS  
-  :warning: Your user must have superuser permissions ("root") or be a member of the "sudo" group.  
+  :warning: Your user must have superuser permissions ("root") or `sudo` command access.  
 2. Make sure you're in your user's default home folder :  
     ```shell
     cd
