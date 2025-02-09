@@ -35,7 +35,7 @@ Tested on :
    You'll need to have some informations handy :
    - HLL game server RCON IP
    - HLL game server RCON port
-   - HLL game server RCON password
+   - HLL game server RCON password  
    These are provided by your game server provider (Qonzer, GTX, GPortal, etc)
 
 Please report [here](https://discord.com/channels/685692524442026020/1337758742447652895) if you encounter any issue.
