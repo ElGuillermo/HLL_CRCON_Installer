@@ -9,7 +9,7 @@ Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rco
 Tested on :  
 - [Debian](https://www.debian.org/) 12.9.0
 - [Ubuntu server](https://ubuntu.com/server) 24.04.1
-- [Fedora](https://fedoraproject.org/) server 41-1.4
+- [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Install
 
