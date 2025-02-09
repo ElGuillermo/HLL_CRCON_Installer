@@ -3,7 +3,7 @@ Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rco
 
 ## Features
 - Checks for requirements (Git, Docker, Docker compose plugin) and installs them if needed
-- Downloads the latest CRCON release
+- Downloads and installs the latest CRCON release
 - Configures the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
 
 Tested on :  
