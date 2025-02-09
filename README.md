@@ -6,7 +6,10 @@ Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rco
 - Download the latest CRCON release
 - Configure the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
 
-Tested on a [Debian](https://www.debian.org/) 12.9.0 and [Ubuntu server](https://ubuntu.com/server) 24.04.1
+Tested on :  
+- [Debian](https://www.debian.org/) 12.9.0
+- [Ubuntu server](https://ubuntu.com/server) 24.04.1
+- [Fedora](https://fedoraproject.org/) server 41-1.4
 
 ## Install
 
