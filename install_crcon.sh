@@ -2,20 +2,21 @@
 # ┌───────────────────────────────────────────────────────────────────────────┐
 # │ CRCON installer                                                           │
 # └───────────────────────────────────────────────────────────────────────────┘
-# Installs the latest CRCON on a fresh Linux server.
-# The script will install Git, Docker, Docker Compose, and CRCON.
-# It will also prompt the user to set the necessary environment variables.
+# The script will :
+# - install curl, git, Docker and Docker Compose plugin if needed
+# - install the latest CRCON on a fresh Linux server
+# - prompt the user to enter values needed to set the first HLL game server.
 # 
-# Supported Linux distributions (tested):
-# - Ubuntu 20.04 LTS / 24.04.1
-# - Debian 10 / 12.9.0
-# 
-# Supported Linux distributions (untested):
-# - CentOS 8
-# - RHEL 8
-# - Fedora 34
-# - Rocky Linux 8.4
-# - AlmaLinux 8.4
+# Supported Linux distributions
+# (tested)
+#   - Ubuntu 20.04 LTS / 24.04.1
+#   - Debian 10 / 12.9.0
+# (untested)
+#   - CentOS 8
+#   - RHEL 8
+#   - Fedora 34
+#   - Rocky Linux 8.4
+#   - AlmaLinux 8.4
 
 # Source: https://github.com/ElGuillermo/HLL_CRCON_Installer
 
@@ -29,7 +30,7 @@ ensure_home_directory() {
     if [[ ! "$CURRENT_DIR" == "$HOME_DIR" ]]; then
         printf "\033[31mX\033[0m The current directory (\033[33m$CURRENT_DIR\033[0m) is not the user's home directory (\033[33m$HOME_DIR\033[0m).\n"
         printf "└ Changing to the home directory...\n"
-        cd $HOME_DIR
+        cd "$HOME_DIR"
         printf "└ \033[32mV\033[0m Now in the home directory: $(pwd)\n"
     else
         printf "\033[32mV\033[0m Already in the user's home directory: \033[33m$CURRENT_DIR\033[0m\n"
@@ -49,7 +50,8 @@ install_git() {
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             $SUDO yum install -y git
         else
-            printf "└ \033[31mX\033[0m Automatic installation of Git is not supported for $DISTRO.\n"
+            printf "└ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
+            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
             exit 1
         fi
         printf "└ \033[32mV\033[0m Git installation completed.\n"
@@ -68,7 +70,7 @@ remove_old_docker() {
         $SUDO yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine || true
         printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
     else
-        printf "└ \033[31mX\033[0m Package removal not supported for $DISTRO.\n"
+        printf "└ \033[31mX\033[0m Package removal not supported for '$DISTRO'.\n"
     fi
 }
 
@@ -86,14 +88,12 @@ install_docker() {
             $SUDO install -m 0755 -d /etc/apt/keyrings
             $SUDO curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
             $SUDO chmod a+r /etc/apt/keyrings/docker.asc
-
             # Add the repository to Apt sources:
             if [[ $DISTRO == "debian" ]]; then
                 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             elif [[ $DISTRO == "ubuntu" ]]; then
                 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             fi
-
             # Update repos and install
             $SUDO apt-get update
             $SUDO apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -104,7 +104,8 @@ install_docker() {
             $SUDO systemctl start docker
             $SUDO systemctl enable docker
         else
-            printf "└ \033[31mX\033[0m Unsupported Linux distribution: $DISTRO\n"
+            printf "└ \033[31mX\033[0m Unsupported Linux distribution: '$DISTRO'.\n"
+            printf "  └ \033[34m?\033[0m You have to install Docker manually.\n"
             exit 1
         fi
         printf "└ \033[32mV\033[0m Docker installation completed.\n"
@@ -124,7 +125,8 @@ install_docker_compose_plugin() {
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             $SUDO yum install -y docker-compose-plugin
         else
-            printf "└ \033[31mX\033[0m Automatic installation of Docker Compose plugin is not supported for $DISTRO.\n"
+            printf "└ \033[31mX\033[0m Automatic installation of Docker Compose plugin is not supported for '$DISTRO'.\n"
+            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
             exit 1
         fi
         printf "└ \033[32mV\033[0m Docker Compose plugin installation completed.\n"
@@ -141,7 +143,7 @@ validate_input() {
     return 0
 }
 
-# Function to validate user input to ensure it contains only numbers and dots
+# Function to validate user input to ensure it is a valid IPv4 address
 validate_input_ip() {
     local input="$1"
     if [[ ! "$input" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
@@ -151,7 +153,7 @@ validate_input_ip() {
     return 0
 }
 
-# Function to validate user input to ensure it contains only numbers
+# Function to validate user input to ensure it contains only numbers in 0-65535 range
 validate_input_port() {
     local input="$1"
     if [[ ! "$input" =~ ^[0-9]+$ ]] || (( input < 0 || input > 65535 )); then
@@ -214,11 +216,11 @@ setup_env_variables() {
     read -p "Enter HLL_PASSWORD: " HLL_PASSWORD
 
     # Replacing the values in the .env file
-    $SUDO sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
-    $SUDO sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" $HOME_DIR/hll_rcon_tool/.env
-    $SUDO sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" $HOME_DIR/hll_rcon_tool/.env
-    $SUDO sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" $HOME_DIR/hll_rcon_tool/.env
-    $SUDO sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" $HOME_DIR/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" "$HOME_DIR"/hll_rcon_tool/.env
+    $SUDO sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" "$HOME_DIR"/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" "$HOME_DIR"/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" "$HOME_DIR"/hll_rcon_tool/.env
+    $SUDO sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" "$HOME_DIR"/hll_rcon_tool/.env
 }
 
 # Function to install curl
@@ -289,7 +291,7 @@ printf "└───────────────────────
 $SUDO git clone https://github.com/MarechJ/hll_rcon_tool.git
 
 # Enter CRCON folder
-cd $HOME_DIR/hll_rcon_tool
+cd "$HOME_DIR"/hll_rcon_tool
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Set configuration files                                   │\n"
@@ -331,6 +333,9 @@ if [[ -n "$WAN_IP" ]]; then
   $SUDO docker compose up -d --remove-orphans
 else
   printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
+  printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
+  printf "      to gain access to the admin panel and change \"admin\" password.\n"
+  printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n"
   exit 1
 fi
 
@@ -339,12 +344,15 @@ printf "│ CRCON installer - Done !                                            
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 echo "CRCON is installed and running."
 echo " "
-echo "You should now change the default \"admin\" password."
+echo "You must now change the default \"admin\" password in admin panel."
+printf "(see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n"
 echo " "
 printf "The admin panel is available at \033[36mhttp://$WAN_IP:8010/admin\033[0m\n"
 printf "The default login name is '\033[90madmin\033[0m' and the password is '\033[90madmin\033[0m'\n"
 echo " "
-printf "Once done, you can access the private interface at \033[36mhttp://$WAN_IP:8010/\033[0m\n"
+printf "Once done, you can access CRCON at :\n"
+printf "- private interface : \033[36mhttp://$WAN_IP:8010/\033[0m\n"
+printf "- public (stats) website : \033[36mhttp://$WAN_IP:7010/\033[0m\n"
 echo " "
 echo "Happy gaming !"
 echo " "
