@@ -14,7 +14,7 @@ Tested on :
 - Checks for requirements (Git, Docker, Docker compose plugin) and installs them if needed
 - Downloads and installs the latest CRCON release
 - Configures the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
-- Defines a (choosen) new "admin" password
+- Defines a (chosen) new "admin" password
 
 ## Install
 
