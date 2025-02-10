@@ -5,16 +5,16 @@ This script will ensure you have the [required software](https://github.com/Mare
 
 It will then install and configure CRCON, as described in the [installation procedure](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation).
 
+Tested on :  
+- [Debian](https://www.debian.org/) 12.9.0
+- [Ubuntu server](https://ubuntu.com/server) 24.04.1
+- [Fedora server](https://fedoraproject.org/server/) 41-1.4
+
 ## Features
 - Checks for requirements (Git, Docker, Docker compose plugin) and installs them if needed
 - Downloads and installs the latest CRCON release
 - Configures the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
 - Asks you to define a new "admin" password
-
-Tested on :  
-- [Debian](https://www.debian.org/) 12.9.0
-- [Ubuntu server](https://ubuntu.com/server) 24.04.1
-- [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Install
 
