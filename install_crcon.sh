@@ -257,7 +257,18 @@ set -e
 if [[ "$(id -u)" -ne 0 ]]; then
     printf "\033[31mX\033[0m You are not running this script as root.\n"
     printf "└ All commands requiring elevated privileges will be executed with 'sudo'.\n"
-    SUDO="sudo"
+    # Get the actual username
+    USER_NAME=$(whoami)
+    # Check if the user is in the sudoers file
+    if sudo -l -U "$USER_NAME" 2>/dev/null | grep -q '(ALL) ALL'; then
+        printf "  └ \033[32mV\033[0m User '$USER_NAME' has 'sudo' privileges.\n"
+        SUDO="sudo"
+    else
+        printf "  └ \033[31mX\033[0m User '$USER_NAME' does NOT have 'sudo' privileges.\n"
+        printf "    Please relog into you linux install with a user having them.\n"
+        printf "\nSorry : we can't go further :/ Exiting...\n"
+        exit 1
+    fi
 else
     printf "\033[32mV\033[0m You are running this script as root.\n"
     SUDO=""
@@ -273,6 +284,7 @@ if [[ -f "/etc/os-release" ]]; then
     DISTRO=$(grep ^ID= /etc/os-release | cut -d= -f2 | tr -d '"')
 else
     printf "\033[31mX\033[0m Unable to detect the Linux distribution.\n"
+    printf "\nSorry : we can't go further :/ Exiting...\n"
     exit 1
 fi
 
@@ -280,7 +292,10 @@ fi
 if ! command -v curl &> /dev/null; then
   install_curl
   if ! command -v curl &> /dev/null; then
-    printf "\033[31mX\033[0m Failed to install curl. Please install it manually and try again.\n"
+    printf "\033[31mX\033[0m Failed to install curl from the default repositories.\n"
+    printf "Please install it manually and try again.\n"
+    printf "Search for the installation instructions here : \033[36mhttps://curl.se\033[0m.\n"
+    printf "\nSorry : we can't go further :/ Exiting...\n"
     exit 1
   fi
 fi
@@ -342,8 +357,10 @@ if [[ -n "$WAN_IP" ]]; then
 else
   printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
   printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
-  printf "      to gain access to the admin panel and change \"admin\" password.\n"
-  printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n"
+  printf "      before accessing the admin panel and manage users accounts.\n"
+  printf "      Failing to do so will trigger 'CSRF' errors on your web browser.\n"
+  printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n\n"
+  read -s -n 1 -p "Press any key to continue..."
 fi
 
 # Change "admin" password
