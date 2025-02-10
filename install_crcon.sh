@@ -344,19 +344,27 @@ else
   printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
   printf "      to gain access to the admin panel and change \"admin\" password.\n"
   printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n"
-  exit 1
 fi
 
+# Change "admin" password
+printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
+printf "│ CRCON installer - Change \"admin\" password                                 │\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+$SUDO docker compose exec -it backend_1 python3 rconweb/manage.py changepassword admin
+
+# Launching CRCON for the first time
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Done !                                                    │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 echo "CRCON is installed and running."
 echo " "
-echo "You must now change the default \"admin\" password in admin panel."
-printf "(see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n"
+printf "Optional, but heavily recommended :\n"
+printf "Create new user(s) account(s) and delete (or disable) the default \"admin\" account.\n"
+printf "That would enforce security and allow to finetune each user's permissions.\n"
 echo " "
-printf "The admin panel is available at \033[36mhttp://$WAN_IP:8010/admin\033[0m\n"
-printf "The default login name is '\033[90madmin\033[0m' and the password is '\033[90madmin\033[0m'\n"
+printf "To do so, access the admin panel at \033[36mhttp://$WAN_IP:8010/admin\033[0m\n"
+printf "You'll find a complete guide on how to manage users at \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m\n"
+# printf "The default login name is '\033[90madmin\033[0m' and the password is '\033[90madmin\033[0m'\n"
 echo " "
 printf "Once done, you can access CRCON at :\n"
 printf "private interface : \033[36mhttp://$WAN_IP:8010/\033[0m\n"
