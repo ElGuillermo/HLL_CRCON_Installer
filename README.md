@@ -1,9 +1,9 @@
 # HLL_CRCON_Installer
 Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool) on a fresh Linux system.
 
-This script will ensure you'll have the [required software](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Requirements#software-requirements) installed on your host.
+This script will ensure you have the [required software](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Requirements#software-requirements) installed on your host.
 
-It will then install CRCON, as described in the [installation procedure](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation).
+It will then install and configure CRCON, as described in the [installation procedure](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation).
 
 ## Features
 - Checks for requirements (Git, Docker, Docker compose plugin) and installs them if needed
