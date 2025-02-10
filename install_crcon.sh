@@ -46,9 +46,9 @@ install_git() {
         printf "└ \033[31mX\033[0m Git is not installed. Proceeding with the installation...\n"
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             $SUDO apt-get update -y
-            $SUDO apt-get install -y git
+            $SUDO apt-get install -y git-all
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
-            $SUDO yum install -y git
+            $SUDO yum install -y git-all
         else
             printf "└ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
             printf "  └ \033[34m?\033[0m You have to install it manually.\n"
