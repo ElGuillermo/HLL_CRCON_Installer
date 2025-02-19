@@ -351,7 +351,7 @@ if [[ -n "$WAN_IP" ]]; then
   # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
   # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-  # update ScoreBoard "base_scoreboard_url"
+  # update ScoreBoard "public_scoreboard_url"
   SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
   $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
