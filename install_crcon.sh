@@ -21,6 +21,7 @@
 #   - AlmaLinux 8.4
 
 # Source: https://github.com/ElGuillermo/HLL_CRCON_Installer
+# Feel free to use/modify/distribute, as long as you keep this note in your code
 
 # ┌───────────────────────────────────────────────────────────────────────────┐
 
