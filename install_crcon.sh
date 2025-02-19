@@ -379,7 +379,7 @@ $SUDO docker compose exec -it backend_1 python3 rconweb/manage.py changepassword
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Done !                                                    │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
-printf "CRCON is installed and running.\n\n"
+printf "\033[32mCRCON is installed and running !\033[0m\n\n"
 printf "Optional, but heavily recommended :\n"
 printf "  To enforce security and allow to finetune each user's permissions,\n"
 printf "  create new user(s) account(s) and delete (or disable) the default \"admin\" account.\n\n"
