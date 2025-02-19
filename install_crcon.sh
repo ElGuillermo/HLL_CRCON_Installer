@@ -344,11 +344,15 @@ if [[ -n "$WAN_IP" ]]; then
   $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
   # update Scorebot "base_api_url"
-  SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_api_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-  $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
+  # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_api_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
+  # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
   # update Scorebot "base_scoreboard_url"
-  SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
+  # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
+  # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
+
+  # update ScoreBoard "base_scoreboard_url"
+  SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
   $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
   # restart CRCON
