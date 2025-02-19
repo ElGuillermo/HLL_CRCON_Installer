@@ -7,7 +7,7 @@
 # - install the latest CRCON on a fresh Linux server
 # - prompt the user to enter RCON credentials for the first HLL game server.
 # - configure Scoreboard public stat site url
-# - prompt the user to enter a new admin password
+# - prompt the user to define a new admin password
 # 
 # Supported Linux distributions
 # (tested)
