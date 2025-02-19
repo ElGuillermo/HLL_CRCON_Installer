@@ -11,10 +11,14 @@ Tested on :
 - [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Features
-- Checks for requirements (Git, Docker, Docker compose plugin) and installs them if needed
-- Downloads and installs the latest CRCON release
-- Configures the first game server to be managed (`.env`, `compose.yaml`, CSRF verification and Scorebot urls)
-- Defines a (chosen) new "admin" password
+- Check for requirements (Git, Docker, Docker compose plugin) and install them if needed
+- Download and install the latest CRCON release
+- Configure the first game server to be managed :
+  - `.env`  
+  - `compose.yaml`
+  - CSRF verification
+  - Scoreboard urls)
+- Ask the user to define a new "admin" password
 
 ## Install
 
