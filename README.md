@@ -17,7 +17,7 @@ Tested on :
   - `.env`  
   - `compose.yaml`
   - CSRF verification
-  - Scoreboard urls)
+  - Scoreboard public stats url
 - Ask the user to define a new "admin" password
 
 ## Install
