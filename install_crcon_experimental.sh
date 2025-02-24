@@ -349,6 +349,9 @@ remove_old_docker
 install_docker
 install_docker_compose_plugin
 
+# Cleaning Docker stuff... Just in case...
+docker system prune -a -f --volumes
+
 # --- Install CRCON ---
 
 # Download CRCON
