@@ -204,14 +204,14 @@ install_docker_compose_plugin() {
 }
 
 # Function to validate user input to ensure it contains only letters and numbers
-validate_input() {
-    local input="$1"
-    if [[ ! "$input" =~ ^[A-Za-z0-9]+$ ]]; then
-        printf "\033[31mX\033[0m Error: $input contains invalid characters. Only letters (a-z) and numbers (0-9), without any space, are allowed.\n"
-        return 1
-    fi
-    return 0
-}
+# validate_input() {
+#     local input="$1"
+#     if [[ ! "$input" =~ ^[A-Za-z0-9]+$ ]]; then
+#         printf "\033[31mX\033[0m Error: $input contains invalid characters. Only letters (a-z) and numbers (0-9), without any space, are allowed.\n"
+#         return 1
+#     fi
+#     return 0
+# }
 
 # Function to validate user input to ensure it is a valid IPv4 address
 validate_input_ip() {
@@ -235,31 +235,50 @@ validate_input_port() {
 
 # Function to prompt for user input and replace in the .env file
 setup_env_variables() {
-    while true; do
-        echo "________________________________________________________________________________"
-        printf "\033[35mDefine your own HLL_DB_PASSWORD\033[0m\n"
-        printf "\033[90mHLL_DB_PASSWORD is a string that will be used as database access password.\033[0m\n"
-        printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
-        read -p "Enter HLL_DB_PASSWORD: " HLL_DB_PASSWORD
-        if validate_input "$HLL_DB_PASSWORD"; then
-            break
-        fi
-    done
+#     while true; do
+#         echo "________________________________________________________________________________"
+#         printf "\033[35mDefine your own HLL_DB_PASSWORD\033[0m\n"
+#         printf "\033[90mHLL_DB_PASSWORD is a string that will be used as database access password.\033[0m\n"
+#         printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
+#         read -p "Enter HLL_DB_PASSWORD: " HLL_DB_PASSWORD
+#         if validate_input "$HLL_DB_PASSWORD"; then
+#             break
+#         fi
+#     done
+
+# DEFAULT_PASSWORD="DefaultPass123"
+# while true; do
+#     echo "________________________________________________________________________________"
+#     printf "\033[35mDefine your own HLL_DB_PASSWORD\033[0m\n"
+#     printf "\033[90mHLL_DB_PASSWORD is a string that will be used as database access password.\033[0m\n"
+#     printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
+#     # Prompt with default value (user can modify or press Enter to accept default)
+#     read -e -p "Enter HLL_DB_PASSWORD [$DEFAULT_PASSWORD]: " input
+#     HLL_DB_PASSWORD="${input:-$DEFAULT_PASSWORD}"
+#     if validate_input "$HLL_DB_PASSWORD"; then
+#         break
+#     fi
+# done
+
+    HLL_DB_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32; echo)
+
+#     while true; do
+#         echo "________________________________________________________________________________"
+#         printf "\033[35mDefine your own RCONWEB_API_SECRET\033[0m\n"
+#         printf "\033[90mRCONWEB_API_SECRET is a string that will be used to scramble users' passwords.\033[0m\n"
+#         printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
+#         read -p "Enter RCONWEB_API_SECRET: " RCONWEB_API_SECRET
+#         if validate_input "$RCONWEB_API_SECRET"; then
+#             break
+#         fi
+#     done
+
+    sleep 2
+    RCONWEB_API_SECRET=$(date +%s | sha256sum | base64 | head -c 32; echo)
 
     while true; do
         echo "________________________________________________________________________________"
-        printf "\033[35mDefine your own RCONWEB_API_SECRET\033[0m\n"
-        printf "\033[90mRCONWEB_API_SECRET is a string that will be used to scramble users' passwords.\033[0m\n"
-        printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
-        read -p "Enter RCONWEB_API_SECRET: " RCONWEB_API_SECRET
-        if validate_input "$RCONWEB_API_SECRET"; then
-            break
-        fi
-    done
-
-    while true; do
-        echo "________________________________________________________________________________"
-        printf "\033[35mEnter your game server's RCON IP\033[0m\n"
+        printf "\033[36mEnter your game server's RCON IP\033[0m\n"
         printf "\033[90mHLL_HOST is the RCON IP address, as provided by your game server provider.\033[0m\n"
         printf "\033[90mExample: 123.123.123.123\033[0m\n"
         read -p "Enter HLL_HOST: " HLL_HOST
@@ -270,7 +289,7 @@ setup_env_variables() {
 
     while true; do
         echo "________________________________________________________________________________"
-        printf "\033[35mEnter your game server's RCON port\033[0m\n"
+        printf "\033[36mEnter your game server's RCON port\033[0m\n"
         printf "\033[90mHLL_PORT is the RCON port, as provided by your game server provider.\033[0m\n"
         printf "\033[90mIt is NOT the same as the game server (query) or SFTP ports\033[0m\n"
         printf "\033[90mExample: 12345\033[0m\n"
@@ -281,18 +300,17 @@ setup_env_variables() {
     done
 
     echo "________________________________________________________________________________"
-    printf "\033[35mEnter your game server's RCON password\033[0m\n"
+    printf "\033[36mEnter your game server's RCON password\033[0m\n"
     printf "\033[90mHLL_PASSWORD is the RCON password, as provided by your game server provider.\033[0m\n"
     read -p "Enter HLL_PASSWORD: " HLL_PASSWORD
 
-    # Replacing the values in the .env file
+    # Save the values in the .env file
     $SUDO sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" "$HOME_DIR"/hll_rcon_tool/.env
     $SUDO sed -i "s/^RCONWEB_API_SECRET=.*/RCONWEB_API_SECRET=$RCONWEB_API_SECRET/" "$HOME_DIR"/hll_rcon_tool/.env
     $SUDO sed -i "s/^HLL_HOST=.*/HLL_HOST=$HLL_HOST/" "$HOME_DIR"/hll_rcon_tool/.env
     $SUDO sed -i "s/^HLL_PORT=.*/HLL_PORT=$HLL_PORT/" "$HOME_DIR"/hll_rcon_tool/.env
     $SUDO sed -i "s/^HLL_PASSWORD=.*/HLL_PASSWORD=$HLL_PASSWORD/" "$HOME_DIR"/hll_rcon_tool/.env
 }
-
 
 # --- Script start ---
 
@@ -341,6 +359,7 @@ fi
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Check and install software requirements                   │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+
 ensure_home_directory
 install_git
 install_curl
@@ -349,19 +368,9 @@ remove_old_docker
 install_docker
 install_docker_compose_plugin
 
-# Cleaning Docker leftovers (if any)
-docker images cericmathey/hll_rcon_tool -q | xargs docker rmi
-docker images cericmathey/hll_rcon_tool_frontend -q | xargs docker rmi
-
-# echo "WARNING: This will remove all unused Docker data, including images, containers, networks, and volumes."
-# read -p "Are you sure you want to proceed? (y/n): " confirm
-# if [[ "$confirm" == "y" ]]; then
-#     echo "Pruning Docker system..."
-#     docker system prune -a -f --volumes
-#     echo "Docker system pruned successfully."
-# else
-#     echo "Operation canceled."
-# fi
+# Cleaning CRCON Docker leftovers (if any)
+$SUDO docker images cericmathey/hll_rcon_tool -q | xargs docker rmi
+$SUDO docker images cericmathey/hll_rcon_tool_frontend -q | xargs docker rmi
 
 # --- Install CRCON ---
 
@@ -374,9 +383,9 @@ $SUDO git clone https://github.com/MarechJ/hll_rcon_tool.git
 # Enter CRCON folder
 cd "$HOME_DIR"/hll_rcon_tool
 
-# Fetch the latest files
-git fetch --tags
-git checkout $(git tag -l --contains HEAD | tail -n1)
+# Fetch the files from the latest tag
+$SUDO git fetch --tags
+$SUDO git checkout $(git tag -l --contains HEAD | tail -n1)
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Set configuration files                                   │\n"
@@ -413,7 +422,7 @@ if [[ -n "$WAN_IP" ]]; then
   # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
   # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-  # update ScoreBoard "public_scoreboard_url"
+  # update Scoreboard "public_scoreboard_url"
   SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
   $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
@@ -444,9 +453,9 @@ printf "Optional, but heavily recommended :\n"
 printf "  To enforce security and allow to finetune each user's permissions,\n"
 printf "  create new user(s) account(s) and delete (or disable) the default \"admin\" account.\n\n"
 printf "  To do so, access the admin panel at \033[36mhttp://$WAN_IP:8010/admin\033[0m\n"
+printf "  The default login name is '\033[90madmin\033[0m', the password is the one you've just set.\n\n"
 printf "  You'll find a complete guide on how to manage users at \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m\n\n"
-# printf "The default login name is '\033[90madmin\033[0m' and the password is '\033[90madmin\033[0m'\n\n"
 printf "Once done, you can access CRCON at :\n"
-printf "  private interface : \033[36mhttp://$WAN_IP:8010/\033[0m\n"
+printf "  private (game admin) interface : \033[36mhttp://$WAN_IP:8010/\033[0m\n"
 printf "  public (stats) website : \033[36mhttp://$WAN_IP:7010/\033[0m\n\n"
 printf "Happy gaming !\n\n"
