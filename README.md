@@ -5,6 +5,13 @@ This script will ensure you have the [required software](https://github.com/Mare
 
 It will then install and configure CRCON, as described in the [installation procedure](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation).
 
+> [!CAUTION]
+> This script should NOT be used on a host that is already running user programs or scripts,  
+> as some system-wide software (git, curl, Docker, Docker compose plugin)  
+> and settings (realtime clock timezone) will be updated or set.
+>
+> Only use it on a freshly installed Linux distro.
+
 Tested on :  
 - [Debian](https://www.debian.org/) 12.9.0
 - [Ubuntu server](https://ubuntu.com/server) 24.04.1
