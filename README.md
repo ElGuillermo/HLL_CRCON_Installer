@@ -10,7 +10,7 @@ It will then install and configure CRCON, as described in the [installation proc
 > as some system-wide software (git, curl, Docker, Docker compose plugin)  
 > and settings (realtime clock timezone) will be updated or set.
 >
-> Only use it on a freshly installed Linux distro.
+> **Only use it on a freshly installed Linux distro.**
 
 Tested on :  
 - [Debian](https://www.debian.org/) 12.9.0
