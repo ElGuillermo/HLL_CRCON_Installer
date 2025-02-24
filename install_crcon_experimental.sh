@@ -349,8 +349,18 @@ remove_old_docker
 install_docker
 install_docker_compose_plugin
 
-# Cleaning Docker stuff... Just in case...
+# Cleaning Docker leftovers (if any)
 docker system prune -a -f --volumes
+
+# echo "WARNING: This will remove all unused Docker data, including images, containers, networks, and volumes."
+# read -p "Are you sure you want to proceed? (y/n): " confirm
+# if [[ "$confirm" == "y" ]]; then
+#     echo "Pruning Docker system..."
+#     docker system prune -a -f --volumes
+#     echo "Docker system pruned successfully."
+# else
+#     echo "Operation canceled."
+# fi
 
 # --- Install CRCON ---
 
