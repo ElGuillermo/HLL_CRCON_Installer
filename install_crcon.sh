@@ -42,142 +42,142 @@ ensure_home_directory() {
 
 # Function to check and install Git
 install_git() {
-  printf "\033[34m?\033[0m Checking if Git is installed...\n"
-  if command -v git &> /dev/null; then
-    printf "└ \033[32mV\033[0m Git is already installed.\n"
-  else
-    printf "└ \033[31mX\033[0m Git is not installed. Proceeding with the installation...\n"
-    if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
-      $SUDO apt-get update -y
-      $SUDO apt-get install -y git-all
-    elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
-      $SUDO yum install -y git-all
+    printf "\033[34m?\033[0m Checking if Git is installed...\n"
+    if command -v git &> /dev/null; then
+        printf "└ \033[32mV\033[0m Git is already installed.\n"
     else
-      printf "└ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
-      printf "  └ \033[34m?\033[0m You have to install it manually.\n"
-      exit 1
+        printf "└ \033[31mX\033[0m Git is not installed. Proceeding with the installation...\n"
+        if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
+            $SUDO apt-get update -y
+            $SUDO apt-get install -y git-all
+        elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
+            $SUDO yum install -y git-all
+        else
+            printf "└ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
+            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
+            exit 1
+        fi
+        printf "└ \033[32mV\033[0m Git installation completed.\n"
     fi
-    printf "└ \033[32mV\033[0m Git installation completed.\n"
-  fi
 }
 
 # Function to install curl
 install_curl() {
-  printf "\033[34m?\033[0m Checking if curl is installed...\n"
-  if command -v curl &> /dev/null; then
-    printf "└ \033[32mV\033[0m curl is already installed.\n"
-  else
-    printf "\033[31mX\033[0m curl is not installed. Attempting to install it...\n"
-    if [[ -f "/etc/debian_version" ]]; then
-      $SUDO apt update && sudo apt install -y curl
-    elif [[ -f "/etc/redhat-release" ]]; then
-      $SUDO yum install -y curl
-    elif [[ -f "/etc/arch-release" ]]; then
-      $SUDO pacman -Syu --noconfirm curl
-    elif [[ -f "/etc/alpine-release" ]]; then
-      $SUDO apk add --no-cache curl
+    printf "\033[34m?\033[0m Checking if curl is installed...\n"
+    if command -v curl &> /dev/null; then
+        printf "└ \033[32mV\033[0m curl is already installed.\n"
     else
-      printf "└ \033[31mX\033[0m Automatic installation of curl is not supported.\n"
-      printf "  └ \033[34m?\033[0m You have to install it manually.\n"
-      printf "    Search for the installation instructions here :\n"
-      printf "    \033[36mhttps://curl.se\033[0m.\n"
-      exit 1
+        printf "\033[31mX\033[0m curl is not installed. Attempting to install it...\n"
+        if [[ -f "/etc/debian_version" ]]; then
+            $SUDO apt update && sudo apt install -y curl
+        elif [[ -f "/etc/redhat-release" ]]; then
+            $SUDO yum install -y curl
+        elif [[ -f "/etc/arch-release" ]]; then
+            $SUDO pacman -Syu --noconfirm curl
+        elif [[ -f "/etc/alpine-release" ]]; then
+            $SUDO apk add --no-cache curl
+        else
+            printf "└ \033[31mX\033[0m Automatic installation of curl is not supported.\n"
+            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
+            printf "    Search for the installation instructions here :\n"
+            printf "    \033[36mhttps://curl.se\033[0m.\n"
+            exit 1
+        fi
+        printf "└ \033[32mV\033[0m curl installation completed.\n"
     fi
-    printf "└ \033[32mV\033[0m curl installation completed.\n"
-  fi
 }
 
 # Function to install and configure systemd-timesyncd,
 # then set the system to UTC
 configure_utc() {
-  printf "\033[34m?\033[0m Checking if systemd-timesyncd is installed...\n"
-  if command -v timedatectl &> /dev/null; then
-    printf "└ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
-  else
-    printf "\033[31mX\033[0m systemd-timesyncd is not installed. Attempting to install it...\n"
-    if [[ -f "/etc/debian_version" ]]; then
-      $SUDO apt update && apt install -y systemd-timesyncd
-    elif [[ -f "/etc/redhat-release" ]]; then
-      $SUDO yum install -y systemd-timesyncd
-    elif [[ -f "/etc/arch-release" ]]; then
-      $SUDO pacman -Sy --noconfirm systemd-timesyncd
-    elif [[ -f "/etc/alpine-release" ]]; then
-      $SUDO apk add --no-cache systemd-timesyncd
+    printf "\033[34m?\033[0m Checking if systemd-timesyncd is installed...\n"
+    if command -v timedatectl &> /dev/null; then
+        printf "└ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
     else
-      printf "└ \033[31mX\033[0m Automatic installation of systemd-timesyncd is not supported.\n"
-      printf "  └ \033[34m?\033[0m You have to install it manually.\n"
-      exit 1
+        printf "\033[31mX\033[0m systemd-timesyncd is not installed. Attempting to install it...\n"
+        if [[ -f "/etc/debian_version" ]]; then
+            $SUDO apt update && apt install -y systemd-timesyncd
+        elif [[ -f "/etc/redhat-release" ]]; then
+            $SUDO yum install -y systemd-timesyncd
+        elif [[ -f "/etc/arch-release" ]]; then
+            $SUDO pacman -Sy --noconfirm systemd-timesyncd
+        elif [[ -f "/etc/alpine-release" ]]; then
+            $SUDO apk add --no-cache systemd-timesyncd
+        else
+            printf "└ \033[31mX\033[0m Automatic installation of systemd-timesyncd is not supported.\n"
+            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
+            exit 1
+        fi
+        printf "└ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
     fi
-    printf "└ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
-  fi
-  systemctl start systemd-timesyncd
-  systemctl enable --now systemd-timesyncd
-  timedatectl set-ntp true
-  timedatectl set-timezone UTC
+    $SUDO systemctl start systemd-timesyncd
+    $SUDO systemctl enable --now systemd-timesyncd
+    $SUDO timedatectl set-ntp true
+    $SUDO timedatectl set-timezone UTC
 }
 
 # Function to remove old Docker packages
 remove_old_docker() {
-  printf "\033[34m?\033[0m Removing old Docker packages (if any)...\n"
-  if [[ "$DISTRO" == "ubuntu" || "$DISTRO" == "debian" ]]; then
-    for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
-      $SUDO apt-get remove -y $pkg || true
-    done
-    printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
-  elif [[ $DISTRO == "fedora" ]]; then
-    $SUDO dnf remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine || true
-    printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
-  elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
-    $SUDO yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine || true
-    printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
-  else
-    printf "└ \033[31mX\033[0m Package removal not supported for '$DISTRO'.\n"
-  fi
+    printf "\033[34m?\033[0m Removing old Docker packages (if any)...\n"
+    if [[ "$DISTRO" == "ubuntu" || "$DISTRO" == "debian" ]]; then
+        for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
+            $SUDO apt-get remove -y $pkg || true
+        done
+        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+    elif [[ $DISTRO == "fedora" ]]; then
+        $SUDO dnf remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine || true
+        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+    elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
+        $SUDO yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine || true
+        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+    else
+        printf "└ \033[31mX\033[0m Package removal not supported for '$DISTRO'.\n"
+    fi
 }
 
 # Function to check and install Docker
 install_docker() {
-  printf "\033[34m?\033[0m Checking if Docker is installed...\n"
-  if command -v docker &> /dev/null; then
-    printf "└ \033[32mV\033[0m Docker is already installed.\n"
-  else
-    printf "└ \033[31mX\033[0m Docker is not installed. Proceeding with the installation...\n"
-    if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
-      # Add Docker's official GPG key:
-      $SUDO apt-get update
-      $SUDO apt-get install ca-certificates curl
-      $SUDO install -m 0755 -d /etc/apt/keyrings
-      $SUDO curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
-      $SUDO chmod a+r /etc/apt/keyrings/docker.asc
-      # Add the repository to Apt sources:
-      if [[ $DISTRO == "debian" ]]; then
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-      elif [[ $DISTRO == "ubuntu" ]]; then
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-      fi
-      # Update repos and install
-      $SUDO apt-get update
-      $SUDO apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-      elif [[ $DISTRO == "fedora" ]]; then
-        $SUDO dnf -y install dnf-plugins-core
-        $SUDO dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-        $SUDO dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-        $SUDO systemctl enable --now docker
-      elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
-        $SUDO yum install -y yum-utils
-        $SUDO yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-        $SUDO yum install -y docker-ce docker-ce-cli containerd.io
-        $SUDO systemctl start docker
-        $SUDO systemctl enable docker
-      else
-        printf "└ \033[31mX\033[0m Unsupported Linux distribution: '$DISTRO'.\n"
-        printf "  └ \033[34m?\033[0m You have to install Docker manually.\n"
-        printf "    Search for the installation instructions here :\n"
-        printf "    \033[36mhttps://docs.docker.com/engine/install/\033[0m.\n"
-        exit 1
-      fi
-    printf "└ \033[32mV\033[0m Docker installation completed.\n"
-  fi
+    printf "\033[34m?\033[0m Checking if Docker is installed...\n"
+    if command -v docker &> /dev/null; then
+        printf "└ \033[32mV\033[0m Docker is already installed.\n"
+    else
+        printf "└ \033[31mX\033[0m Docker is not installed. Proceeding with the installation...\n"
+        if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
+            # Add Docker's official GPG key:
+            $SUDO apt-get update
+            $SUDO apt-get install ca-certificates curl
+            $SUDO install -m 0755 -d /etc/apt/keyrings
+            $SUDO curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+            $SUDO chmod a+r /etc/apt/keyrings/docker.asc
+            # Add the repository to Apt sources:
+            if [[ $DISTRO == "debian" ]]; then
+                echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            elif [[ $DISTRO == "ubuntu" ]]; then
+                echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            fi
+            # Update repos and install
+            $SUDO apt-get update
+            $SUDO apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            elif [[ $DISTRO == "fedora" ]]; then
+                $SUDO dnf -y install dnf-plugins-core
+                $SUDO dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+                $SUDO dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+                $SUDO systemctl enable --now docker
+            elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
+                $SUDO yum install -y yum-utils
+                $SUDO yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+                $SUDO yum install -y docker-ce docker-ce-cli containerd.io
+                $SUDO systemctl start docker
+                $SUDO systemctl enable docker
+            else
+                printf "└ \033[31mX\033[0m Unsupported Linux distribution: '$DISTRO'.\n"
+                printf "  └ \033[34m?\033[0m You have to install Docker manually.\n"
+                printf "    Search for the installation instructions here :\n"
+                printf "    \033[36mhttps://docs.docker.com/engine/install/\033[0m.\n"
+                exit 1
+            fi
+        printf "└ \033[32mV\033[0m Docker installation completed.\n"
+    fi
 }
 
 # Function to check and install Docker Compose plugin
@@ -407,35 +407,35 @@ $SUDO docker compose up -d --remove-orphans
 # Fetch the WAN IP address from a web service
 WAN_IP=$(curl -s https://ipinfo.io/ip)
 if [[ -n "$WAN_IP" ]]; then
-  PRIVATE_URL="http://$WAN_IP:8010/"
-  PUBLIC_URL="http://$WAN_IP:7010/"
+    PRIVATE_URL="http://$WAN_IP:8010/"
+    PUBLIC_URL="http://$WAN_IP:7010/"
 
-  # update CRCON settings "server_url"
-  SQL="UPDATE public.user_config SET value = jsonb_set(value, '{server_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_RconServerSettingsUserConfig';"
-  $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
+    # update CRCON settings "server_url"
+    SQL="UPDATE public.user_config SET value = jsonb_set(value, '{server_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_RconServerSettingsUserConfig';"
+    $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-  # update Scorebot "base_api_url"
-  # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_api_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-  # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
+    # update Scorebot "base_api_url"
+    # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_api_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
+    # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-  # update Scorebot "base_scoreboard_url"
-  # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-  # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
+    # update Scorebot "base_scoreboard_url"
+    # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
+    # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-  # update Scoreboard "public_scoreboard_url"
-  SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
-  $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
+    # update Scoreboard "public_scoreboard_url"
+    SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
+    $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-  # restart CRCON
-  $SUDO docker compose down
-  $SUDO docker compose up -d --remove-orphans
+    # restart CRCON
+    $SUDO docker compose down
+    $SUDO docker compose up -d --remove-orphans
 else
-  printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
-  printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
-  printf "      before accessing the admin panel and manage users accounts.\n"
-  printf "      Failing to do so will trigger 'CSRF' errors on your web browser.\n"
-  printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n\n"
-  read -s -n 1 -p "Press any key to continue..."
+    printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
+    printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
+    printf "      before accessing the admin panel and manage users accounts.\n"
+    printf "      Failing to do so will trigger 'CSRF' errors on your web browser.\n"
+    printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n\n"
+    read -s -n 1 -p "Press any key to continue..."
 fi
 
 # Change "admin" password
