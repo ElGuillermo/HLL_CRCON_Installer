@@ -203,16 +203,6 @@ install_docker_compose_plugin() {
     fi
 }
 
-# Function to validate user input to ensure it contains only letters and numbers
-# validate_input() {
-#     local input="$1"
-#     if [[ ! "$input" =~ ^[A-Za-z0-9]+$ ]]; then
-#         printf "\033[31mX\033[0m Error: $input contains invalid characters. Only letters (a-z) and numbers (0-9), without any space, are allowed.\n"
-#         return 1
-#     fi
-#     return 0
-# }
-
 # Function to validate user input to ensure it is a valid IPv4 address
 validate_input_ip() {
     local input="$1"
@@ -235,44 +225,7 @@ validate_input_port() {
 
 # Function to prompt for user input and replace in the .env file
 setup_env_variables() {
-#     while true; do
-#         echo "________________________________________________________________________________"
-#         printf "\033[35mDefine your own HLL_DB_PASSWORD\033[0m\n"
-#         printf "\033[90mHLL_DB_PASSWORD is a string that will be used as database access password.\033[0m\n"
-#         printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
-#         read -p "Enter HLL_DB_PASSWORD: " HLL_DB_PASSWORD
-#         if validate_input "$HLL_DB_PASSWORD"; then
-#             break
-#         fi
-#     done
-
-# DEFAULT_PASSWORD="DefaultPass123"
-# while true; do
-#     echo "________________________________________________________________________________"
-#     printf "\033[35mDefine your own HLL_DB_PASSWORD\033[0m\n"
-#     printf "\033[90mHLL_DB_PASSWORD is a string that will be used as database access password.\033[0m\n"
-#     printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
-#     # Prompt with default value (user can modify or press Enter to accept default)
-#     read -e -p "Enter HLL_DB_PASSWORD [$DEFAULT_PASSWORD]: " input
-#     HLL_DB_PASSWORD="${input:-$DEFAULT_PASSWORD}"
-#     if validate_input "$HLL_DB_PASSWORD"; then
-#         break
-#     fi
-# done
-
     HLL_DB_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32; echo)
-
-#     while true; do
-#         echo "________________________________________________________________________________"
-#         printf "\033[35mDefine your own RCONWEB_API_SECRET\033[0m\n"
-#         printf "\033[90mRCONWEB_API_SECRET is a string that will be used to scramble users' passwords.\033[0m\n"
-#         printf "\033[90mInvent your own using only regular letters and numbers, without any space in it.\033[0m\n"
-#         read -p "Enter RCONWEB_API_SECRET: " RCONWEB_API_SECRET
-#         if validate_input "$RCONWEB_API_SECRET"; then
-#             break
-#         fi
-#     done
-
     sleep 2
     RCONWEB_API_SECRET=$(date +%s | sha256sum | base64 | head -c 32; echo)
 
