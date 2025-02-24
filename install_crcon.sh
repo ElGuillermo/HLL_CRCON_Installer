@@ -298,6 +298,10 @@ fi
 
 # --- Software requirements ---
 
+printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
+printf "│ CRCON installer - Check and install software requirements                   │\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+
 # Detect Linux distro
 if [[ -f "/etc/os-release" ]]; then
     DISTRO=$(grep ^ID= /etc/os-release | cut -d= -f2 | tr -d '"')
@@ -307,12 +311,7 @@ else
     exit 1
 fi
 
-# --- Install software requirements ---
-
-printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
-printf "│ CRCON installer - Check and install software requirements                   │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
-
+# Various install procedures
 ensure_home_directory
 install_git
 install_curl
