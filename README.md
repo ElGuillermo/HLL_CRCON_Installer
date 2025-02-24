@@ -8,7 +8,7 @@ It will then install and configure CRCON, as described in the [installation proc
 > [!CAUTION]
 > This script should NOT be used on a host that is already running user programs or scripts,  
 > as some system-wide software (git, curl, Docker, Docker compose plugin)  
-> and settings (realtime clock timezone) will be updated or set.
+> and settings (realtime clock timezone set on UTC) will be updated or set.
 >
 > **Only use it on a freshly installed Linux distro.**
 
@@ -18,12 +18,17 @@ Tested on :
 - [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Features
-- Check for requirements (Git, Docker, Docker compose plugin) and install them if needed
-- Download and install the latest CRCON release
-- Configure the first game server to be managed :
-  - `.env`  
-  - `compose.yaml`
-  - CSRF verification
+- Check for requirements and install them if needed
+  - git
+  - curl
+  - datetimectl
+  - Docker
+  - Docker 'compose' plugin
+- Download and install the latest CRCON release  
+- Configure the first game server to be managed :  
+  - RCON credentials in `.env`  
+  - one game server `compose.yaml`
+  - CSRF verification url
   - Scoreboard public stats url
 - Ask the user to define a new "admin" password
 
