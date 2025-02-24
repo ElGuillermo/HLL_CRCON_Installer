@@ -270,6 +270,11 @@ setup_env_variables() {
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+clear
+printf "┌─────────────────────────────────────────────────────────────────────────────┐\n"
+printf "│ CRCON installer - checking requirements                                     │\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+
 # Check if the script is being run as root
 if [[ "$(id -u)" -ne 0 ]]; then
     printf "\033[31mX\033[0m You are not running this script as root.\n"
@@ -292,11 +297,6 @@ else
 fi
 
 # --- Software requirements ---
-
-clear
-printf "┌─────────────────────────────────────────────────────────────────────────────┐\n"
-printf "│ CRCON installer - checking requirements                                     │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
 
 # Detect Linux distro
 if [[ -f "/etc/os-release" ]]; then
@@ -401,7 +401,7 @@ printf "│ CRCON installer - Change \"admin\" password                         
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
 $SUDO docker compose exec -it backend_1 python3 rconweb/manage.py changepassword admin
 
-# Launching CRCON for the first time
+# Installation done
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Done !                                                    │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
