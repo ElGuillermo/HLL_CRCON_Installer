@@ -350,7 +350,8 @@ install_docker
 install_docker_compose_plugin
 
 # Cleaning Docker leftovers (if any)
-docker system prune -a -f --volumes
+docker images cericmathey/hll_rcon_tool -q | xargs docker rmi
+docker images cericmathey/hll_rcon_tool_frontend -q | xargs docker rmi
 
 # echo "WARNING: This will remove all unused Docker data, including images, containers, networks, and volumes."
 # read -p "Are you sure you want to proceed? (y/n): " confirm
