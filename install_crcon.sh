@@ -356,7 +356,7 @@ setup_env_variables
 
 # Launching CRCON for the first time
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
-printf "│ CRCON installer - CSRF configuration                                        │\n"
+printf "│ CRCON installer - CSRF and Scoreboard configuration                         │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
 $SUDO docker compose up -d --remove-orphans
 
