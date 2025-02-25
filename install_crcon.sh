@@ -225,7 +225,9 @@ validate_input_port() {
 
 # Function to prompt for user input and replace in the .env file
 setup_env_variables() {
+    # These will be automatically generated
     HLL_DB_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32; echo)
+    # Sleep time to avoid getting the same password twice
     sleep 2
     RCONWEB_API_SECRET=$(date +%s | sha256sum | base64 | head -c 32; echo)
 
@@ -247,7 +249,7 @@ setup_env_variables() {
         printf "\033[90mIt is NOT the same as the game server (query) or SFTP ports\033[0m\n"
         printf "\033[90mExample: 12345\033[0m\n"
         read -p "Enter HLL_PORT: " HLL_PORT
-        if validate_input_port "$HLL_PORT"; then
+        if validate_password "$HLL_PORT"; then
             break
         fi
     done
