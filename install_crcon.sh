@@ -144,8 +144,8 @@ install_docker() {
         printf "└ \033[31mX\033[0m Docker is not installed. Proceeding with the installation...\n"
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             # Add Docker's official GPG key:
-            $SUDO apt-get update
-            $SUDO apt-get install ca-certificates curl
+            $SUDO apt-get update -y
+            $SUDO apt-get install -y ca-certificates curl
             $SUDO install -m 0755 -d /etc/apt/keyrings
             $SUDO curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
             $SUDO chmod a+r /etc/apt/keyrings/docker.asc
@@ -156,8 +156,8 @@ install_docker() {
                 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$UBUNTU_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
             fi
             # Update repos and install
-            $SUDO apt-get update
-            $SUDO apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            $SUDO apt-get update -y
+            $SUDO apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
             elif [[ $DISTRO == "fedora" ]]; then
                 $SUDO dnf -y install dnf-plugins-core
                 $SUDO dnf-3 config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
