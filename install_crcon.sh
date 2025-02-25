@@ -392,7 +392,7 @@ if [[ -n "$WAN_IP" ]]; then
     $SUDO docker compose up -d --remove-orphans
     # Add some sleep time to be sure the containers are fully initialised before accessing them
     print f"Giving some time to the CRCON Docker containers to start...\n"
-    sleep 10
+    sleep 15
 else
     printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
     printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
