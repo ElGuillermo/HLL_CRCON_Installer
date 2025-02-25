@@ -362,7 +362,7 @@ printf "│ CRCON installer - CSRF and Scoreboard configuration                 
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
 $SUDO docker compose up -d --remove-orphans
 # Add some sleep time to be sure the containers are fully initialised before accessing them
-print f"Giving some time to the CRCON Docker containers to start...\n"
+print f"Giving some time to the CRCON Docker containers to be fully started and running...\n"
 sleep 15
 
 # Fetch the WAN IP address from a web service
@@ -391,7 +391,7 @@ if [[ -n "$WAN_IP" ]]; then
     $SUDO docker compose down
     $SUDO docker compose up -d --remove-orphans
     # Add some sleep time to be sure the containers are fully initialised before accessing them
-    print f"Giving some time to the CRCON Docker containers to start...\n"
+    print f"Giving some time to the CRCON Docker containers to be fully started and running...\n"
     sleep 15
 else
     printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
