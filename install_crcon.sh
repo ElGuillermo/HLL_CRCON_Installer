@@ -324,10 +324,10 @@ install_docker_compose_plugin
 
 # Cleaning CRCON Docker leftovers (if any)
 if [ -n "$($SUDO docker images cericmathey/hll_rcon_tool -q)" ]; then
-    $SUDO docker images cericmathey/hll_rcon_tool -q | xargs docker rmi
+    $SUDO docker images cericmathey/hll_rcon_tool -q | xargs docker rmi -f
 fi
 if [ -n "$($SUDO docker images cericmathey/hll_rcon_tool_frontend -q)" ]; then
-    $SUDO docker images cericmathey/hll_rcon_tool_frontend -q | xargs docker rmi
+    $SUDO docker images cericmathey/hll_rcon_tool_frontend -q | xargs docker rmi -f
 fi
 
 # --- Install CRCON ---
