@@ -249,7 +249,7 @@ setup_env_variables() {
         printf "\033[90mIt is NOT the same as the game server (query) or SFTP ports\033[0m\n"
         printf "\033[90mExample: 12345\033[0m\n"
         read -p "Enter HLL_PORT: " HLL_PORT
-        if validate_password "$HLL_PORT"; then
+        if validate_input_port "$HLL_PORT"; then
             break
         fi
     done
