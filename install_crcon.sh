@@ -359,6 +359,8 @@ printf "\n┌──────────────────────�
 printf "│ CRCON installer - CSRF and Scoreboard configuration                         │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
 $SUDO docker compose up -d --remove-orphans
+# Add some sleep time to be sure the containers are fully initialised before accessing them
+sleep 10
 
 # Fetch the WAN IP address from a web service
 WAN_IP=$(curl -s https://ipinfo.io/ip)
@@ -385,6 +387,8 @@ if [[ -n "$WAN_IP" ]]; then
     # restart CRCON
     $SUDO docker compose down
     $SUDO docker compose up -d --remove-orphans
+    # Add some sleep time to be sure the containers are fully initialised before accessing them
+    sleep 10
 else
     printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
     printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
@@ -398,8 +402,6 @@ fi
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Change \"admin\" password                                   │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
-# Add some sleep time to be sure the containers are fully initialised before accessing them
-sleep 10
 $SUDO docker compose exec -it backend_1 python3 rconweb/manage.py changepassword admin
 
 # Installation done
