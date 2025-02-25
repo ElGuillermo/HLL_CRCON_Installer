@@ -398,6 +398,8 @@ fi
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Change \"admin\" password                                   │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+# Add some sleep time to be sure the containers are fully initialised before accessing them
+sleep 10
 $SUDO docker compose exec -it backend_1 python3 rconweb/manage.py changepassword admin
 
 # Installation done
