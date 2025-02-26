@@ -1,5 +1,5 @@
 # HLL_CRCON_Installer
-Installs an Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool) on a fresh Linux system.
+Installs the latest Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool) on a fresh Linux system.
 
 This script will install any missing [required software](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Requirements#software-requirements).
 
