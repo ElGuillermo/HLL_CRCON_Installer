@@ -24,6 +24,7 @@ Tested on :
   - datetimectl
   - Docker
   - Docker 'compose' plugin
+- Will **try** to backup any config files and database from a previous CRCON install before deleting it
 - Download and install the latest CRCON release  
 - Configure the first game server to be managed :  
   - RCON credentials in `.env`  
