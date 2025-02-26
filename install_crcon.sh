@@ -102,6 +102,7 @@ configure_utc() {
     if command -v timedatectl &> /dev/null; then
         printf "  └ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
     else
+        printf "  └ \033[31mX\033[0m systemd-timesyncd is not installed. Installing...\n"
         if [[ -f "/etc/debian_version" ]]; then
             $SUDO apt update && apt install -y systemd-timesyncd
         elif [[ -f "/etc/redhat-release" ]]; then
