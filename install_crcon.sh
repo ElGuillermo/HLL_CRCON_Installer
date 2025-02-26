@@ -102,30 +102,28 @@ configure_utc() {
     if command -v timedatectl &> /dev/null; then
         printf "  └ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
     else
-        printf "  └ \033[31mX\033[0m systemd-timesyncd is not installed. Attempting to install it...\n"
         if [[ -f "/etc/debian_version" ]]; then
             $SUDO apt update && apt install -y systemd-timesyncd
-            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         elif [[ -f "/etc/redhat-release" ]]; then
             $SUDO yum install -y systemd-timesyncd
-            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         elif [[ -f "/etc/arch-release" ]]; then
             $SUDO pacman -Sy --noconfirm systemd-timesyncd
-            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         elif [[ -f "/etc/alpine-release" ]]; then
             $SUDO apk add --no-cache systemd-timesyncd
-            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         else
             printf "    └ \033[31mX\033[0m Automatic installation of systemd-timesyncd is not supported.\n"
             printf "      \033[36m?\033[0m You have to install it manually.\n"
             printf "      Exiting...\n"
             exit 1
         fi
-        printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
     fi
     printf "  └ \033[36m?\033[0m Configuring systemd-timesyncd...\n"
-    $SUDO systemctl start systemd-timesyncd
-    $SUDO systemctl enable --now systemd-timesyncd
+    if ! systemctl is-active --quiet systemd-timesyncd; then
+        $SUDO systemctl start systemd-timesyncd
+    fi
+    if ! systemctl is-enabled --quiet systemd-timesyncd; then
+        $SUDO systemctl enable --now systemd-timesyncd
+    fi
     $SUDO timedatectl set-ntp true
     $SUDO timedatectl set-timezone UTC
     printf "    └ \033[32mV\033[0m systemd-timesyncd configured and set to UTC.\n"
