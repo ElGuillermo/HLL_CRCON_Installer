@@ -240,7 +240,7 @@ cleanup_crcon() {
 
     # Check and remove images
     IMAGES=("cericmathey/hll_rcon_tool_frontend" "cericmathey/hll_rcon_tool")
-    IMAGES+=($(docker images --format "{{.Repository}}" | grep "hll_rcon_tool-"))
+    IMAGES+=($($SUDO docker images --format "{{.Repository}}" | grep "hll_rcon_tool-"))
     for IMAGE in "${IMAGES[@]}"; do
         IMAGE_ID=$($SUDO docker images -q "$IMAGE")
         if [ -n "$IMAGE_ID" ]; then
