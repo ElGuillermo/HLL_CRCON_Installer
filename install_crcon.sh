@@ -432,7 +432,7 @@ install_docker_compose_plugin
 cleanup_crcon
 backup_previous_crcon
 
-# Cleaning previous CRCON Docker leftovers (if any)
+# Deleting previous CRCON folder (if any)
 if [[ -d "$HOME_DIR/hll_rcon_tool" ]]; then
     $SUDO rm -rf "$HOME_DIR/hll_rcon_tool"
 fi
