@@ -25,123 +25,141 @@
 
 # --- Functions ---
 
-# Function to check and change to the home directory
+# Be sure we're in the current user's home folder
 ensure_home_directory() {
+    printf "\033[36m?\033[0m Checking if we're in user's home folder...\n"
     CURRENT_DIR=$(pwd)
     HOME_DIR=$(eval echo "~$USER")
 
     if [[ ! "$CURRENT_DIR" == "$HOME_DIR" ]]; then
-        printf "\033[31mX\033[0m The current directory (\033[33m$CURRENT_DIR\033[0m) is not the user's home directory (\033[33m$HOME_DIR\033[0m).\n"
-        printf "└ Changing to the home directory...\n"
+        printf "  └ \033[31mX\033[0m The current folder (\033[33m$CURRENT_DIR\033[0m) is not the user's home folder (\033[33m$HOME_DIR\033[0m).\n"
+        printf "    └ Changing to the home folder...\n"
         cd "$HOME_DIR"
-        printf "└ \033[32mV\033[0m Now in the home directory: $(pwd)\n"
+        printf "    └ \033[32mV\033[0m We're now in the home folder: \033[33m$HOME_DIR\033[0m\n"
     else
-        printf "\033[32mV\033[0m Already in the user's home directory: \033[33m$CURRENT_DIR\033[0m\n"
+        printf "  └ \033[32mV\033[0m Already in the user's home folder: \033[33m$CURRENT_DIR\033[0m\n"
     fi
 }
 
-# Function to check and install Git
+# Check and install Git
 install_git() {
-    printf "\033[34m?\033[0m Checking if Git is installed...\n"
+    printf "\033[36m?\033[0m Checking if Git is installed...\n"
     if command -v git &> /dev/null; then
-        printf "└ \033[32mV\033[0m Git is already installed.\n"
+        printf "  └ \033[32mV\033[0m Git is already installed.\n"
     else
-        printf "└ \033[31mX\033[0m Git is not installed. Proceeding with the installation...\n"
+        printf "  └ \033[31mX\033[0m Git is not installed. Attempting to install it...\n"
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             $SUDO apt-get update -y
             $SUDO apt-get install -y git-all
+            printf "    └ \033[32mV\033[0m Git installation completed.\n"
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             $SUDO yum install -y git-all
+            printf "    └ \033[32mV\033[0m Git installation completed.\n"
         else
-            printf "└ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
-            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
+            printf "    └ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
+            printf "      \033[36m?\033[0m You have to install it manually.\n\n"
+            printf "      Exiting...\n"
             exit 1
         fi
-        printf "└ \033[32mV\033[0m Git installation completed.\n"
+        printf "    └ \033[32mV\033[0m Git installation completed.\n"
     fi
 }
 
-# Function to install curl
+# Install curl
 install_curl() {
-    printf "\033[34m?\033[0m Checking if curl is installed...\n"
+    printf "\033[36m?\033[0m Checking if curl is installed...\n"
     if command -v curl &> /dev/null; then
-        printf "└ \033[32mV\033[0m curl is already installed.\n"
+        printf "  └ \033[32mV\033[0m curl is already installed.\n"
     else
-        printf "\033[31mX\033[0m curl is not installed. Attempting to install it...\n"
+        printf "  └ \033[31mX\033[0m curl is not installed. Attempting to install it...\n"
         if [[ -f "/etc/debian_version" ]]; then
             $SUDO apt update && sudo apt install -y curl
+            printf "    └ \033[32mV\033[0m curl installation completed.\n"
         elif [[ -f "/etc/redhat-release" ]]; then
             $SUDO yum install -y curl
+            printf "    └ \033[32mV\033[0m curl installation completed.\n"
         elif [[ -f "/etc/arch-release" ]]; then
             $SUDO pacman -Syu --noconfirm curl
+            printf "    └ \033[32mV\033[0m curl installation completed.\n"
         elif [[ -f "/etc/alpine-release" ]]; then
             $SUDO apk add --no-cache curl
+            printf "    └ \033[32mV\033[0m curl installation completed.\n"
         else
-            printf "└ \033[31mX\033[0m Automatic installation of curl is not supported.\n"
-            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
-            printf "    Search for the installation instructions here :\n"
-            printf "    \033[36mhttps://curl.se\033[0m.\n"
+            printf "    └ \033[31mX\033[0m Automatic installation of curl is not supported.\n"
+            printf "      \033[36m?\033[0m You have to install it manually.\n\n"
+            printf "      Search for the installation instructions here :\n"
+            printf "      \033[36mhttps://curl.se\033[0m.\n\n"
+            printf "      Exiting...\n"
             exit 1
         fi
         printf "└ \033[32mV\033[0m curl installation completed.\n"
     fi
 }
 
-# Function to install and configure systemd-timesyncd,
-# then set the system to UTC
+# Install and configure systemd-timesyncd, then set the system to UTC
 configure_utc() {
-    printf "\033[34m?\033[0m Checking if systemd-timesyncd is installed...\n"
+    printf "\033[36m?\033[0m Checking if systemd-timesyncd is installed...\n"
     if command -v timedatectl &> /dev/null; then
-        printf "└ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
+        printf "  └ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
     else
-        printf "\033[31mX\033[0m systemd-timesyncd is not installed. Attempting to install it...\n"
+        printf "  └ \033[31mX\033[0m systemd-timesyncd is not installed. Attempting to install it...\n"
         if [[ -f "/etc/debian_version" ]]; then
             $SUDO apt update && apt install -y systemd-timesyncd
+            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         elif [[ -f "/etc/redhat-release" ]]; then
             $SUDO yum install -y systemd-timesyncd
+            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         elif [[ -f "/etc/arch-release" ]]; then
             $SUDO pacman -Sy --noconfirm systemd-timesyncd
+            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         elif [[ -f "/etc/alpine-release" ]]; then
             $SUDO apk add --no-cache systemd-timesyncd
+            printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
         else
-            printf "└ \033[31mX\033[0m Automatic installation of systemd-timesyncd is not supported.\n"
-            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
+            printf "    └ \033[31mX\033[0m Automatic installation of systemd-timesyncd is not supported.\n"
+            printf "      \033[36m?\033[0m You have to install it manually.\n"
+            printf "      Exiting...\n"
             exit 1
         fi
-        printf "└ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
+        printf "    └ \033[32mV\033[0m systemd-timesyncd installation completed.\n"
     fi
+    printf "  └ \033[36m?\033[0m Configuring systemd-timesyncd...\n"
     $SUDO systemctl start systemd-timesyncd
     $SUDO systemctl enable --now systemd-timesyncd
     $SUDO timedatectl set-ntp true
     $SUDO timedatectl set-timezone UTC
+    printf "    └ \033[32mV\033[0m systemd-timesyncd configured and set to UTC.\n"
 }
 
-# Function to remove old Docker packages
+# Remove old Docker packages
 remove_old_docker() {
-    printf "\033[34m?\033[0m Removing old Docker packages (if any)...\n"
+    printf "\033[36m?\033[0m Removing old Docker packages (if any)...\n"
     if [[ "$DISTRO" == "ubuntu" || "$DISTRO" == "debian" ]]; then
         for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
             $SUDO apt-get remove -y $pkg || true
         done
-        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+        printf "  └ \033[32mV\033[0m Old Docker packages removed.\n"
     elif [[ $DISTRO == "fedora" ]]; then
         $SUDO dnf remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine || true
-        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+        printf "  └ \033[32mV\033[0m Old Docker packages removed.\n"
     elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
         $SUDO yum remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine || true
-        printf "└ \033[32mV\033[0m Old Docker packages removed.\n"
+        printf "  └ \033[32mV\033[0m Old Docker packages removed.\n"
     else
-        printf "└ \033[31mX\033[0m Package removal not supported for '$DISTRO'.\n"
+        printf "  └ \033[31mX\033[0m Package removal not supported for '$DISTRO'.\n"
+        printf "    You have to remove them manually.\n\n"
+        printf "    Exiting...\n"
+        exit 1
     fi
 }
 
-# Function to check and install Docker
+# Check and install Docker
 install_docker() {
-    printf "\033[34m?\033[0m Checking if Docker is installed...\n"
+    printf "\033[36m?\033[0m Checking if Docker is installed...\n"
     if command -v docker &> /dev/null; then
-        printf "└ \033[32mV\033[0m Docker is already installed.\n"
+        printf "  └ \033[32mV\033[0m Docker is already installed.\n"
     else
-        printf "└ \033[31mX\033[0m Docker is not installed. Proceeding with the installation...\n"
+        printf "  └ \033[31mX\033[0m Docker is not installed. Proceeding with the installation...\n"
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             # Add Docker's official GPG key:
             $SUDO apt-get update -y
@@ -170,40 +188,112 @@ install_docker() {
                 $SUDO systemctl start docker
                 $SUDO systemctl enable docker
             else
-                printf "└ \033[31mX\033[0m Unsupported Linux distribution: '$DISTRO'.\n"
-                printf "  └ \033[34m?\033[0m You have to install Docker manually.\n"
-                printf "    Search for the installation instructions here :\n"
-                printf "    \033[36mhttps://docs.docker.com/engine/install/\033[0m.\n"
+                printf "    └ \033[31mX\033[0m Unsupported Linux distribution: '$DISTRO'.\n"
+                printf "      \033[36m?\033[0m You have to install Docker manually.\n\n"
+                printf "      Search for the installation instructions here :\n"
+                printf "      \033[36mhttps://docs.docker.com/engine/install/\033[0m.\n\n"
+                printf "      Exiting...\n"
                 exit 1
             fi
         printf "└ \033[32mV\033[0m Docker installation completed.\n"
     fi
 }
 
-# Function to check and install Docker Compose plugin
+# Check and install Docker Compose plugin
 install_docker_compose_plugin() {
-    printf "\033[34m?\033[0m Checking if Docker Compose plugin is installed...\n"
+    printf "\033[36m?\033[0m Checking if Docker Compose plugin is installed...\n"
     if docker compose version &> /dev/null; then
-        printf "└ \033[32mV\033[0m Docker Compose plugin is already installed.\n"
+        printf "  └ \033[32mV\033[0m Docker Compose plugin is already installed.\n"
     else
-        printf "└ \033[31mX\033[0m Docker Compose plugin is not installed. Proceeding with the installation...\n"
+        printf "  └ \033[31mX\033[0m Docker Compose plugin is not installed. Proceeding with the installation...\n"
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             $SUDO apt-get update -y
             $SUDO apt-get install -y docker-compose-plugin
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             $SUDO yum install -y docker-compose-plugin
         else
-            printf "└ \033[31mX\033[0m Automatic installation of Docker Compose plugin is not supported for '$DISTRO'.\n"
-            printf "  └ \033[34m?\033[0m You have to install it manually.\n"
+            printf "    └ \033[31mX\033[0m Automatic installation of Docker Compose plugin is not supported for '$DISTRO'.\n"
+            printf "    \033[36m?\033[0m You have to install it manually.\n"
             printf "    Search for the installation instructions here :\n"
-            printf "    \033[36mhttps://docs.docker.com/compose/\033[0m.\n"
+            printf "    \033[36mhttps://docs.docker.com/compose/\033[0m.\n\n"
+            printf "    Exiting...\n"
             exit 1
         fi
         printf "└ \033[32mV\033[0m Docker Compose plugin installation completed.\n"
     fi
 }
 
-# Function to validate user input to ensure it is a valid IPv4 address
+# Stop and delete previous CRCON containers and images
+cleanup_crcon() {
+    printf "\033[36m?\033[0m Checking for running CRCON containers and images...\n"
+
+    # Check and remove containers
+    CONTAINERS=$($SUDO docker ps -q --filter "ancestor=cericmathey/hll_rcon_tool_frontend" --filter "ancestor=cericmathey/hll_rcon_tool")
+    NAMED_CONTAINERS=$($SUDO docker ps -q --filter "name=hll_rcon_tool-")
+    ALL_CONTAINERS=$(echo -e "$CONTAINERS\n$NAMED_CONTAINERS" | sort -u)
+    if [ -n "$ALL_CONTAINERS" ]; then
+        printf "  └ \033[36m?\033[0m Stopping and removing running CRCON containers...\n"
+        echo "$ALL_CONTAINERS" | xargs -r $SUDO docker rm -f
+    else
+        printf "  └ \033[32mV\033[0m No running CRCON containers found.\n"
+    fi
+
+    # Check and remove images
+    for IMAGE in "${IMAGES[@]}"; do
+        IMAGE_ID=$($SUDO docker images -q "$IMAGE")
+        if [ -n "$IMAGE_ID" ]; then
+            echo "$IMAGE_ID" | xargs -r $SUDO docker rmi -f
+        fi
+    done
+}
+
+# Check for previous installation and save its essential files
+backup_previous_crcon() {
+    printf "\033[36m?\033[0m Checking for previous CRCON installation...\n"
+    if [[ -d "$HOME_DIR/hll_rcon_tool" ]]; then
+        printf "  └ \033[31m!\033[0m Previous CRCON installation found in \033[33m$HOME_DIR/hll_rcon_tool\033[0m\n"
+
+        # Create a backup folder with the current date
+        BACKUP_FOLDER="$HOME_DIR/previous_crcon_installation_$(date '+%Y-%m-%d_%Hh%M')"
+        if [[ -d "$BACKUP_FOLDER" ]]; then
+            printf "    └ \033[31m!\033[0m Previous backup folder found.\n"
+        else
+            $SUDO mkdir $BACKUP_FOLDER
+            printf "    └ \033[32mV\033[0m Backup folder created in \033[33m$BACKUP_FOLDER\033[0m\n"
+        fi
+
+        # Saving the previous .env file
+        if [[ -f "$HOME_DIR/hll_rcon_tool/.env" ]]; then
+            printf "  └ \033[31m!\033[0m Previous .env file found.\n"
+            $SUDO cp "$HOME_DIR/hll_rcon_tool/.env" "$BACKUP_FOLDER/.env"
+            printf "    └ \033[32mV\033[0m .env file saved.\n"
+        else
+            printf "  └ \033[32mV\033[0m No previous .env file found.\n"
+        fi
+
+        # Saving the previous compose.yaml file
+        if [[ -f "$HOME_DIR/hll_rcon_tool/compose.yaml" ]]; then
+            printf "  └ \033[31m!\033[0m Previous compose.yaml file found.\n"
+            $SUDO cp "$HOME_DIR/hll_rcon_tool/compose.yaml" "$BACKUP_FOLDER/compose.yaml"
+            printf "    └ \033[32mV\033[0m compose.yaml file saved.\n"
+        else
+            printf "  └ \033[32mV\033[0m No previous compose.yaml file found.\n"
+        fi
+
+        # Saving the previous db_data/ folder
+        if [[ -d "$HOME_DIR/hll_rcon_tool/db_data" ]]; then
+            printf "  └ \033[31m!\033[0m Previous database found.\n"
+            $SUDO cp -r "$HOME_DIR/hll_rcon_tool/db_data" "$BACKUP_FOLDER/db_data"
+            printf "    └ \033[32mV\033[0m Database saved.\n"
+        else
+            printf "  └ \033[32mV\033[0m No previous database folder found.\n"
+        fi
+    else
+        printf "└ \033[32mV\033[0m No previous CRCON installation found.\n"
+    fi
+}
+
+# Validate user input to ensure it is a valid IPv4 address
 validate_input_ip() {
     local input="$1"
     if [[ ! "$input" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then
@@ -213,7 +303,7 @@ validate_input_ip() {
     return 0
 }
 
-# Function to validate user input to ensure it contains only numbers in 0-65535 range
+# Validate user input to ensure it contains only numbers in 0-65535 range
 validate_input_port() {
     local input="$1"
     if [[ ! "$input" =~ ^[0-9]+$ ]] || (( input < 0 || input > 65535 )); then
@@ -223,7 +313,7 @@ validate_input_port() {
     return 0
 }
 
-# Function to prompt for user input and replace in the .env file
+# Prompt for user input and replace in the .env file
 setup_env_variables() {
     # These will be automatically generated
     HLL_DB_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32; echo)
@@ -232,32 +322,31 @@ setup_env_variables() {
     RCONWEB_API_SECRET=$(date +%s | sha256sum | base64 | head -c 32; echo)
 
     while true; do
-        echo "________________________________________________________________________________"
         printf "\033[36mEnter your game server's RCON IP\033[0m\n"
         printf "\033[90mHLL_HOST is the RCON IP address, as provided by your game server provider.\033[0m\n"
         printf "\033[90mExample: 123.123.123.123\033[0m\n"
-        read -p "Enter HLL_HOST: " HLL_HOST
+        read -p "Enter game server RCON IP: " HLL_HOST
         if validate_input_ip "$HLL_HOST"; then
             break
         fi
     done
 
     while true; do
-        echo "________________________________________________________________________________"
+        printf "________________________________________________________________________________\n"
         printf "\033[36mEnter your game server's RCON port\033[0m\n"
         printf "\033[90mHLL_PORT is the RCON port, as provided by your game server provider.\033[0m\n"
         printf "\033[90mIt is NOT the same as the game server (query) or SFTP ports\033[0m\n"
         printf "\033[90mExample: 12345\033[0m\n"
-        read -p "Enter HLL_PORT: " HLL_PORT
+        read -p "Enter game server RCON port: " HLL_PORT
         if validate_input_port "$HLL_PORT"; then
             break
         fi
     done
 
-    echo "________________________________________________________________________________"
+    printf "________________________________________________________________________________\n"
     printf "\033[36mEnter your game server's RCON password\033[0m\n"
     printf "\033[90mHLL_PASSWORD is the RCON password, as provided by your game server provider.\033[0m\n"
-    read -p "Enter HLL_PASSWORD: " HLL_PASSWORD
+    read -p "Enter game server RCON password: " HLL_PASSWORD
 
     # Save the values in the .env file
     $SUDO sed -i "s/^HLL_DB_PASSWORD=.*/HLL_DB_PASSWORD=$HLL_DB_PASSWORD/" "$HOME_DIR"/hll_rcon_tool/.env
@@ -271,6 +360,26 @@ setup_env_variables() {
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
+
+clear
+printf "┌─────────────────────────────────────────────────────────────────────────────┐\n"
+printf "│ CRCON installer                                                             │\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
+printf "This script will install the latest CRCON on your Linux server.\n"
+printf "CRCON is a web-based RCON tool for Hell Let Loose game servers.\n"
+printf "It allows you to manage your game server, ban players, change maps, etc.\n"
+printf "It also provides a public scoreboard website for your players.\n\n"
+printf "--- WARNING ---\n"
+printf "If you choose to proceed, \033[33many previous CRCON install will be DELETED\033[0m.\n\n"
+printf "The script will try to backup your existing .env, compose.yaml and database,\n"
+printf "but it will fail if you have changed the default install paths.\n"
+printf "Please make sure to backup any data you find valuable before proceeding.\n\n"
+printf "Enter 'yes' to proceed :\n"
+read -r user_input
+if [[ "$user_input" != "yes" ]]; then
+    printf "Exiting the script.\n"
+    exit 1
+fi
 
 clear
 printf "┌─────────────────────────────────────────────────────────────────────────────┐\n"
@@ -313,7 +422,6 @@ else
     exit 1
 fi
 
-# Various install procedures
 ensure_home_directory
 install_git
 install_curl
@@ -321,13 +429,12 @@ configure_utc
 remove_old_docker
 install_docker
 install_docker_compose_plugin
+cleanup_crcon
+backup_previous_crcon
 
-# Cleaning CRCON Docker leftovers (if any)
-if [ -n "$($SUDO docker images cericmathey/hll_rcon_tool -q)" ]; then
-    $SUDO docker images cericmathey/hll_rcon_tool -q | xargs docker rmi -f
-fi
-if [ -n "$($SUDO docker images cericmathey/hll_rcon_tool_frontend -q)" ]; then
-    $SUDO docker images cericmathey/hll_rcon_tool_frontend -q | xargs docker rmi -f
+# Cleaning previous CRCON Docker leftovers (if any)
+if [[ -d "$HOME_DIR/hll_rcon_tool" ]]; then
+    $SUDO rm -rf "$HOME_DIR/hll_rcon_tool"
 fi
 
 # --- Install CRCON ---
@@ -342,6 +449,7 @@ $SUDO git clone https://github.com/MarechJ/hll_rcon_tool.git
 cd "$HOME_DIR"/hll_rcon_tool
 
 # Fetch the files from the latest tag
+# TODO : once worked... now it fails (remains on master)
 $SUDO git fetch --tags
 $SUDO git checkout $(git tag -l --contains HEAD | tail -n1)
 
@@ -362,7 +470,7 @@ printf "│ CRCON installer - CSRF and Scoreboard configuration                 
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
 $SUDO docker compose up -d --remove-orphans
 # Add some sleep time to be sure the containers are fully initialised before accessing them
-print f"Giving some time to the CRCON Docker containers to be fully started and running...\n"
+printf "Giving some time to the CRCON Docker containers to be fully started and running...\n"
 sleep 15
 
 # Fetch the WAN IP address from a web service
@@ -375,14 +483,6 @@ if [[ -n "$WAN_IP" ]]; then
     SQL="UPDATE public.user_config SET value = jsonb_set(value, '{server_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_RconServerSettingsUserConfig';"
     $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
-    # update Scorebot "base_api_url"
-    # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_api_url}', '\"$PRIVATE_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-    # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
-
-    # update Scorebot "base_scoreboard_url"
-    # SQL="UPDATE public.user_config SET value = jsonb_set(value, '{base_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScorebotUserConfig';"
-    # $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
-
     # update Scoreboard "public_scoreboard_url"
     SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
     $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
@@ -391,11 +491,11 @@ if [[ -n "$WAN_IP" ]]; then
     $SUDO docker compose down
     $SUDO docker compose up -d --remove-orphans
     # Add some sleep time to be sure the containers are fully initialised before accessing them
-    print f"Giving some time to the CRCON Docker containers to be fully started and running...\n"
+    printf "Giving some time to the CRCON Docker containers to be fully started and running...\n"
     sleep 15
 else
     printf "\033[31mX\033[0m Failed to retrieve the WAN IP address.\n"
-    printf "  └ \033[34m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
+    printf "  └ \033[36m?\033[0m You'll have to manually set your CRCON url in CRCON settings\n"
     printf "      before accessing the admin panel and manage users accounts.\n"
     printf "      Failing to do so will trigger 'CSRF' errors on your web browser.\n"
     printf "      (see \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m)\n\n"
