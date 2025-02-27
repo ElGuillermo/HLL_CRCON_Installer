@@ -14,7 +14,7 @@ It will then install and configure CRCON, as described in the [installation proc
 
 > [!WARNING]
 > Running the script over a previous CRCON install will DELETE it.  
-> It will **try** to backup your existing .env, compose.yaml and database,  
+> It will **try** to backup your existing `.env`, `compose.yaml` and database,  
 > but that will fail if you have changed the default install paths.  
 >   
 > Please make sure to backup any data you find valuable before proceeding.
