@@ -66,7 +66,7 @@ Tested on :
    - HLL game server RCON IP
    - HLL game server RCON port
    - HLL game server RCON password
-7. (optional) Create new users
+7. Create new users (optional but heavily recommended)
    - Follow regular [installation procedure from step 6.3](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation#3-create-you-own-users).
 
 ## Troubleshooting and reviews
