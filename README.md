@@ -13,11 +13,11 @@ It will then install and configure CRCON, as described in the [installation proc
 > **Only use it on a freshly installed Linux distro.**
 
 > [!WARNING]
-> Running the script over a previous CRCON install will DELETE it.  
-> It will **try** to backup your existing `.env`, `compose.yaml` and database,  
-> but that will fail if you have changed the default install paths.  
+> Running the script on a machine where a previous CRCON is installed will DELETE it.  
+> It will **try** to backup your existing `.env`, `compose.yaml` and database before,  
+> but that could fail, mostly if you have changed the default install paths.  
 >   
-> Please make sure to backup any data you find valuable before proceeding.
+> -> Please make sure to backup any data you find valuable before proceeding.
 
 Tested on :  
 - [Debian](https://www.debian.org/) 12.9.0
