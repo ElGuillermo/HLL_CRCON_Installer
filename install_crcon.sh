@@ -226,24 +226,42 @@ install_docker_compose_plugin() {
 cleanup_crcon() {
     printf "\033[36m?\033[0m Checking for running CRCON containers and images...\n"
 
-    # Check and remove containers
+    # Check and remove running containers
     CONTAINERS=$($SUDO docker ps -q --filter "ancestor=cericmathey/hll_rcon_tool_frontend" --filter "ancestor=cericmathey/hll_rcon_tool")
     NAMED_CONTAINERS=$($SUDO docker ps -q --filter "name=hll_rcon_tool-")
-    ALL_CONTAINERS=$(echo -e "$CONTAINERS\n$NAMED_CONTAINERS" | sort -u)
+
+    # Merge and deduplicate container IDs
+    ALL_CONTAINERS=$(echo -e "$CONTAINERS\n$NAMED_CONTAINERS" | sort -u | sed '/^$/d')
+
     if [ -n "$ALL_CONTAINERS" ]; then
         printf "  └ \033[36m?\033[0m Stopping and removing running CRCON containers...\n"
         echo "$ALL_CONTAINERS" | xargs -r $SUDO docker rm -f
     else
-        printf "  └ \033[32mV\033[0m No running CRCON containers found.\n"
+        printf "  └ \033[32m✔\033[0m No running CRCON containers found.\n"
     fi
 
     # Check and remove images
     IMAGES=("cericmathey/hll_rcon_tool_frontend" "cericmathey/hll_rcon_tool")
-    IMAGES+=($($SUDO docker images --format "{{.Repository}}" | grep "hll_rcon_tool-"))
+
+    # Safely add dynamically found images
+    ADDITIONAL_IMAGES=$($SUDO docker images --format "{{.Repository}}" | grep "hll_rcon_tool-" || true)
+    if [ -n "$ADDITIONAL_IMAGES" ]; then
+        while IFS= read -r img; do
+            IMAGES+=("$img")
+        done <<< "$ADDITIONAL_IMAGES"
+    fi
+
+    # Remove images if they exist
     for IMAGE in "${IMAGES[@]}"; do
-        IMAGE_ID=$($SUDO docker images -q "$IMAGE")
-        if [ -n "$IMAGE_ID" ]; then
-            echo "$IMAGE_ID" | xargs -r $SUDO docker rmi -f
+        if [ -n "$IMAGE" ]; then
+            IMAGE_ID=$($SUDO docker images -q "$IMAGE" | sed '/^$/d')
+
+            if [ -n "$IMAGE_ID" ]; then
+                printf "  └ \033[36m?\033[0m Removing image: %s\n" "$IMAGE"
+                echo "$IMAGE_ID" | xargs -r $SUDO docker rmi -f
+            else
+                printf "  └ \033[32m✔\033[0m No image found for: %s\n" "$IMAGE"
+            fi
         fi
     done
 }
