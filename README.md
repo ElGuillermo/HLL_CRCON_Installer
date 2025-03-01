@@ -2,23 +2,14 @@
 Installs the latest Hell Let Loose (HLL) [CRCON](https://github.com/MarechJ/hll_rcon_tool) on a Linux host.
 
 > [!CAUTION]
-> This script must be run with caution on a host that is already running user programs or scripts,  
-> as some system-wide software (git, curl, Docker, Docker compose plugin)  
-> and settings (realtime clock timezone set on UTC) will be updated or set.
->
-> -> You should only use it on a freshly installed Linux distro.
-
-> [!WARNING]
-> Running the script on a machine where a previous CRCON is installed will DELETE it.  
-> It will try to backup your existing `.env`, `compose.yaml` and database before,  
+> This script must be run with caution on a host where user programs or scripts are already running,  
+> as some system-wide software and settings will be updated.
+> 
+> Any previous CRCON install will be DELETED.  
+> Script will attempt to backup any found config files and database folder,  
 > but that could fail, mostly if you have changed the default install paths.  
 >   
 > -> Please make sure to backup any data you find valuable before proceeding.
-
-Tested on :  
-- [Debian](https://www.debian.org/) 12.9.0
-- [Ubuntu server](https://ubuntu.com/server) 24.04.1
-- [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Features
 
@@ -37,6 +28,11 @@ This script will :
   - CSRF verification url
   - Scoreboard public stats url
 - Ask the user to define a new "admin" password
+
+Tested on :  
+- [Debian](https://www.debian.org/) 12.9.0
+- [Ubuntu server](https://ubuntu.com/server) 24.04.1
+- [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Install
 
