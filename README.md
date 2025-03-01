@@ -65,7 +65,7 @@ These are provided by your game server provider (Qonzer, GTX, GPortal, Nitrado, 
 - HLL game server RCON port
 - HLL game server RCON password
 
-When install procedure completes, you should create new users.
+Once the installation is complete, we recommend that you create accounts for each person who will use the CRCON moderation interface.
 - Follow regular [installation procedure from step 6.3](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation#3-create-you-own-users).
 
 ## Troubleshooting and reviews
