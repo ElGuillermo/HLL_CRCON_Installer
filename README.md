@@ -60,7 +60,7 @@ but that could fail, mostly if you have changed the default install paths.
 ```
 
 You'll need to have some informations handy.  
-These are provided by your game server provider (Qonzer, GTX, GPortal, Nitrado, etc)  
+These are provided by your game server provider (GPortal, GTX, Nitrado, Qonzer, etc)  
 - HLL game server RCON IP
 - HLL game server RCON port
 - HLL game server RCON password
