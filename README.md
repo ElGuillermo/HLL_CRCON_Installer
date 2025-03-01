@@ -52,18 +52,21 @@ but that could fail, mostly if you have changed the default install paths.
     ```shell
     chmod +x install_crcon.sh
     ```
-5. Launch it :
-    ```shell
-    ./install_crcon.sh
-    ```
-6. Follow instructions  
-   You'll need to have some informations handy.  
-   These are provided by your game server provider (Qonzer, GTX, GPortal, etc)  
-   - HLL game server RCON IP
-   - HLL game server RCON port
-   - HLL game server RCON password
-7. Create new users (optional but heavily recommended)
-   - Follow regular [installation procedure from step 6.3](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation#3-create-you-own-users).
+
+## Launching
+
+```shell
+./install_crcon.sh
+```
+
+You'll need to have some informations handy.  
+These are provided by your game server provider (Qonzer, GTX, GPortal, Nitrado, etc)  
+- HLL game server RCON IP
+- HLL game server RCON port
+- HLL game server RCON password
+
+When install procedure completes, you should create new users.
+- Follow regular [installation procedure from step 6.3](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation#3-create-you-own-users).
 
 ## Troubleshooting and reviews
 
