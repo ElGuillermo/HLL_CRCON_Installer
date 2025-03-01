@@ -1,20 +1,16 @@
 # HLL_CRCON_Installer
-Installs the latest Hell Let Loose (HLL) CRCON (see : https://github.com/MarechJ/hll_rcon_tool) on a fresh Linux system.
-
-This script will also install any missing [required software](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Requirements#software-requirements) (see list below).
-
-It will then install and configure CRCON, as described in the [installation procedure](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Installation).
+Installs the latest Hell Let Loose (HLL) [CRCON](https://github.com/MarechJ/hll_rcon_tool)
 
 > [!CAUTION]
-> This script should NOT be used on a host that is already running user programs or scripts,  
+> This script must be run with caution on a host that is already running user programs or scripts,  
 > as some system-wide software (git, curl, Docker, Docker compose plugin)  
 > and settings (realtime clock timezone set on UTC) will be updated or set.
 >
-> **Only use it on a freshly installed Linux distro.**
+> -> You should only use it on a freshly installed Linux distro.
 
 > [!WARNING]
 > Running the script on a machine where a previous CRCON is installed will DELETE it.  
-> It will **try** to backup your existing `.env`, `compose.yaml` and database before,  
+> It will try to backup your existing `.env`, `compose.yaml` and database before,  
 > but that could fail, mostly if you have changed the default install paths.  
 >   
 > -> Please make sure to backup any data you find valuable before proceeding.
@@ -25,15 +21,17 @@ Tested on :
 - [Fedora server](https://fedoraproject.org/server/) 41-1.4
 
 ## Features
-- Check for requirements and install them if needed
+
+This script will :  
+- install any missing [required software](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Requirements#software-requirements)
   - git
   - curl
   - datetimectl
-  - Docker
-  - Docker 'compose' plugin
-- Will **try** to backup any config files and database from a previous CRCON install before deleting it
-- Download and install the latest CRCON release  
-- Configure the first game server to be managed :  
+  - replace obsoleted Docker and `docker-compose` with latest stable versions
+- backup (if found) a previous CRCON database, `.env` and `compose.yaml` files
+- purge anything related to a previous CRCON install (Docker images and containers, `hll_rcon_tool` folder)
+- install the latest available CRCON stable version
+- configure the first game server to be managed
   - RCON credentials in `.env`  
   - one game server `compose.yaml`
   - CSRF verification url
