@@ -13,7 +13,7 @@ Installs the latest Hell Let Loose (HLL) [CRCON](https://github.com/MarechJ/hll_
 
 ## Features
 
-This script will :  
+### This script will :
 - install any missing [required software](https://github.com/MarechJ/hll_rcon_tool/wiki/Getting-Started-%E2%80%90-Requirements#software-requirements)
   - git
   - curl
@@ -29,7 +29,7 @@ This script will :
   - Scoreboard public stats url
 - Ask the user to define a new "admin" password
 
-Tested on :  
+### Tested on :  
 - [Debian](https://www.debian.org/) 12.9.0
 - [Ubuntu server](https://ubuntu.com/server) 24.04.1
 - [Fedora server](https://fedoraproject.org/server/) 41-1.4
