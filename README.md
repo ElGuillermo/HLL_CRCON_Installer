@@ -1,5 +1,5 @@
 # HLL_CRCON_Installer
-Installs the latest Hell Let Loose (HLL) [CRCON](https://github.com/MarechJ/hll_rcon_tool)
+Installs the latest Hell Let Loose (HLL) [CRCON](https://github.com/MarechJ/hll_rcon_tool) on a Linux host.
 
 > [!CAUTION]
 > This script must be run with caution on a host that is already running user programs or scripts,  
