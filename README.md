@@ -53,7 +53,7 @@ but that could fail, mostly if you have changed the default install paths.
     chmod +x install_crcon.sh
     ```
 
-## Launching
+## Launch
 
 ```shell
 ./install_crcon.sh
