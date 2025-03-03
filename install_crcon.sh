@@ -20,43 +20,44 @@
 
 # --- Functions ---
 
-# Check privileges and set $SUDO
+# Function to check privileges and set $SUDO
 check_privileges() {
+    printf "\033[36m?\033[0m Checking current user permissions...\n"
     SUDO=""
 
     # Check if the user is root
     if [[ "$(id -u)" -eq 0 ]]; then
-        printf "\033[32mV\033[0m You are running this script as root.\n"
-        return 0  # Root user, no need for sudo
+        printf "└ \033[32mV\033[0m You are running this script as root.\n"
+        return 0
     fi
 
-    printf "\033[31mX\033[0m You are not running this script as root.\n"
+    printf "└ \033[31mX\033[0m You are not running this script as root.\n"
 
     # Check if sudo is available
     if ! command -v sudo &>/dev/null; then
-        printf "  └ \033[31mX\033[0m The sudo command is not installed. Unable to check privileges.\n\n"
-        printf "Sorry: we can't go further. Exiting...\n\n"
+        printf "    └ \033[31mX\033[0m The sudo command is not installed. Unable to check privileges.\n\n"
+        printf "Sorry : we can't go further :/ Exiting...\n\n"
         exit 1
     fi
 
     # Check if user can run sudo without a password
     if sudo -n true 2>/dev/null; then
-        printf "  └ \033[32mV\033[0m User '$(whoami)' has sudo privileges.\n"
+        printf "    └ \033[32mV\033[0m User '$(whoami)' has sudo privileges.\n"
         SUDO="sudo"
         return 0
     fi
 
     # Fallback: Check if sudo -l contains an "ALL" rule (ignoring localization)
     if LANG=C sudo -l 2>/dev/null | grep -Ez '(ALL[[:space:]]*:[[:space:]]*ALL)[[:space:]]*ALL' >/dev/null; then
-        printf "  └ \033[32mV\033[0m User '$(whoami)' has sudo privileges.\n"
+        printf "    └ \033[32mV\033[0m User '$(whoami)' has sudo privileges.\n"
         SUDO="sudo"
         return 0
     fi
 
     # If neither check passes, deny access
-    printf "  └ \033[31mX\033[0m User '$(whoami)' does NOT have sudo privileges.\n"
-    printf "    Please log in as a user with sudo access.\n\n"
-    printf "Sorry: we can't go further. Exiting...\n\n"
+    printf "    └ \033[31mX\033[0m User '$(whoami)' does NOT have sudo privileges.\n"
+    printf "      Please log in as a user with sudo access.\n\n"
+    printf "Sorry : we can't go further :/ Exiting...\n\n"
     exit 1
 }
 
@@ -64,8 +65,6 @@ check_privileges() {
 ensure_home_directory() {
     printf "\033[36m?\033[0m Checking if we're in user's home folder...\n"
     CURRENT_DIR=$(pwd)
-
-    # Use $USER if available, otherwise fallback to the current user
     USERNAME="${USER:-$(whoami)}"
     HOME_DIR=$(eval echo "~$USERNAME")
 
@@ -98,6 +97,70 @@ linux_flavor(){
     printf "  └ \033[32mV\033[0m Detected Linux distribution: \033[33m$DISTRO\033[0m\n"
 }
 
+# Install and configure systemd-timesyncd, then set the system to UTC
+configure_utc() {
+    printf "\033[36m?\033[0m Checking if systemd-timesyncd is installed...\n"
+
+    # Check if timedatectl and systemctl are available (systemd-based systems)
+    if command -v timedatectl &> /dev/null && command -v systemctl &> /dev/null; then
+        printf "  └ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
+    else
+        printf "  └ \033[31mX\033[0m systemd-timesyncd is not installed. Installing...\n"
+        
+        if [[ -f "/etc/debian_version" ]]; then
+            $SUDO apt update >/dev/null 2>&1
+            $SUDO apt-get install -y systemd >/dev/null 2>&1
+
+        elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
+            if command -v dnf &> /dev/null; then
+                $SUDO dnf install -y systemd >/dev/null 2>&1
+            else
+                $SUDO yum install -y systemd >/dev/null 2>&1
+            fi
+
+        elif [[ $DISTRO == "arch" || $DISTRO == "manjaro" ]]; then
+            $SUDO pacman -Syu --noconfirm systemd >/dev/null 2>&1
+
+        elif [[ -f "/etc/alpine-release" ]]; then
+            $SUDO apk add --no-cache systemd >/dev/null 2>&1
+
+        elif [[ $DISTRO == "opensuse" || $DISTRO == "sles" ]]; then
+            $SUDO zypper install -y systemd >/dev/null 2>&1
+
+        else
+            printf "    └ \033[31mX\033[0m Automatic installation of systemd is not supported for this distribution.\n"
+            printf "      \033[36m?\033[0m You have to install it manually.\n\n"
+            printf "Sorry : we can't go further :/ Exiting...\n\n"
+            exit 1
+        fi
+        printf "    └ \033[32mV\033[0m systemd installation completed.\n"
+    fi
+
+    # Configure systemd-timesyncd (only on systemd-based systems)
+    if command -v systemctl &> /dev/null; then
+        printf "  └ \033[36m?\033[0m Configuring systemd-timesyncd...\n"
+        
+        # Start systemd-timesyncd service
+        if ! systemctl is-active --quiet systemd-timesyncd; then
+            $SUDO systemctl start systemd-timesyncd
+        fi
+
+        # Enable systemd-timesyncd service
+        if ! systemctl is-enabled --quiet systemd-timesyncd; then
+            $SUDO systemctl enable --now systemd-timesyncd
+        fi
+        
+        # Set NTP and UTC timezone
+        $SUDO timedatectl set-ntp true
+        $SUDO timedatectl set-timezone UTC
+        printf "    └ \033[32mV\033[0m systemd-timesyncd configured and set to UTC.\n"
+    else
+        printf "  └ \033[31mX\033[0m systemd is not available on this system. Unable to configure systemd-timesyncd.\n"
+        printf "    \033[36m?\033[0m You may need to install systemd manually or use another method.\n"
+        # exit 1
+    fi
+}
+
 # Check and install Git
 install_git() {
     printf "\033[36m?\033[0m Checking if Git is installed...\n"
@@ -110,22 +173,27 @@ install_git() {
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             $SUDO apt-get update -y >/dev/null 2>&1
             $SUDO apt-get install -y git >/dev/null 2>&1
+
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             if command -v dnf &> /dev/null; then
                 $SUDO dnf install -y git >/dev/null 2>&1
             else
                 $SUDO yum install -y git >/dev/null 2>&1
             fi
+
         elif [[ $DISTRO == "arch" || $DISTRO == "manjaro" ]]; then
             $SUDO pacman -Syu --noconfirm git >/dev/null 2>&1
+
         elif [[ $DISTRO == "alpine" ]]; then
             $SUDO apk add --no-cache git >/dev/null 2>&1
+
         elif [[ $DISTRO == "opensuse" || $DISTRO == "sles" ]]; then
             $SUDO zypper install -y git >/dev/null 2>&1
+
         else
             printf "    └ \033[31mX\033[0m Automatic installation of Git is not supported for '$DISTRO'.\n"
             printf "      \033[36m?\033[0m You have to install it manually.\n\n"
-            printf "      Sorry : we can't go further :/ Exiting...\n\n"
+            printf "Sorry : we can't go further :/ Exiting...\n\n"
             exit 1
         fi
         printf "    └ \033[32mV\033[0m Git installation completed.\n"
@@ -144,83 +212,30 @@ install_curl() {
         if [[ $DISTRO == "ubuntu" || $DISTRO == "debian" ]]; then
             $SUDO apt-get update -y >/dev/null 2>&1
             $SUDO apt-get install -y curl >/dev/null 2>&1
+
         elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
             if command -v dnf &> /dev/null; then
                 $SUDO dnf install -y curl >/dev/null 2>&1
             else
                 $SUDO yum install -y curl >/dev/null 2>&1
             fi
+
         elif [[ $DISTRO == "arch" || $DISTRO == "manjaro" ]]; then
             $SUDO pacman -Syu --noconfirm curl >/dev/null 2>&1
+
         elif [[ $DISTRO == "alpine" ]]; then
             $SUDO apk add --no-cache curl >/dev/null 2>&1
+
         elif [[ $DISTRO == "opensuse" || $DISTRO == "sles" ]]; then
             $SUDO zypper install -y curl >/dev/null 2>&1
+
         else
             printf "    └ \033[31mX\033[0m Automatic installation of curl is not supported for '$DISTRO'.\n"
             printf "      \033[36m?\033[0m You have to install it manually.\n\n"
-            printf "      Sorry : we can't go further :/ Exiting...\n\n"
+            printf "Sorry : we can't go further :/ Exiting...\n\n"
             exit 1
         fi
         printf "    └ \033[32mV\033[0m curl installation completed.\n"
-    fi
-}
-
-# Install and configure systemd-timesyncd, then set the system to UTC
-configure_utc() {
-    printf "\033[36m?\033[0m Checking if systemd-timesyncd is installed...\n"
-
-    # Check if timedatectl and systemctl are available (systemd-based systems)
-    if command -v timedatectl &> /dev/null && command -v systemctl &> /dev/null; then
-        printf "  └ \033[32mV\033[0m systemd-timesyncd is already installed.\n"
-    else
-        printf "  └ \033[31mX\033[0m systemd-timesyncd is not installed. Installing...\n"
-        
-        # Installation based on distribution
-        if [[ -f "/etc/debian_version" ]]; then
-            $SUDO apt update >/dev/null 2>&1
-            $SUDO apt-get install -y systemd >/dev/null 2>&1
-        elif [[ $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "fedora" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
-            if command -v dnf &> /dev/null; then
-                $SUDO dnf install -y systemd >/dev/null 2>&1
-            else
-                $SUDO yum install -y systemd >/dev/null 2>&1
-            fi
-        elif [[ $DISTRO == "arch" || $DISTRO == "manjaro" ]]; then
-            $SUDO pacman -Syu --noconfirm systemd >/dev/null 2>&1
-        elif [[ -f "/etc/alpine-release" ]]; then
-            $SUDO apk add --no-cache systemd >/dev/null 2>&1
-        elif [[ $DISTRO == "opensuse" || $DISTRO == "sles" ]]; then
-            $SUDO zypper install -y systemd >/dev/null 2>&1
-        else
-            printf "    └ \033[31mX\033[0m Automatic installation of systemd is not supported for this distribution.\n"
-            printf "      \033[36m?\033[0m You have to install it manually.\n\n"
-            printf "      Sorry : we can't go further :/ Exiting...\n\n"
-            exit 1
-        fi
-        printf "    └ \033[32mV\033[0m systemd installation completed.\n"
-    fi
-
-    # Configure systemd-timesyncd (only on systemd-based systems)
-    if command -v systemctl &> /dev/null; then
-        printf "  └ \033[36m?\033[0m Configuring systemd-timesyncd...\n"
-        
-        # Start and enable systemd-timesyncd service
-        if ! systemctl is-active --quiet systemd-timesyncd; then
-            $SUDO systemctl start systemd-timesyncd
-        fi
-        if ! systemctl is-enabled --quiet systemd-timesyncd; then
-            $SUDO systemctl enable --now systemd-timesyncd
-        fi
-        
-        # Set NTP and UTC timezone
-        $SUDO timedatectl set-ntp true
-        $SUDO timedatectl set-timezone UTC
-        printf "    └ \033[32mV\033[0m systemd-timesyncd configured and set to UTC.\n"
-    else
-        printf "  └ \033[31mX\033[0m systemd is not available on this system. Unable to configure systemd-timesyncd.\n"
-        printf "    \033[36m?\033[0m You may need to install systemd manually or use another method.\n"
-        # exit 1
     fi
 }
 
@@ -232,14 +247,19 @@ remove_old_docker() {
         for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
             $SUDO apt-get remove -y $pkg >/dev/null 2>&1 || true
         done
+
     elif [[ $DISTRO == "fedora" || $DISTRO == "centos" || $DISTRO == "rhel" || $DISTRO == "rocky" || $DISTRO == "alma" ]]; then
         $SUDO dnf remove -y docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-selinux docker-engine-selinux docker-engine >/dev/null 2>&1 || true
+
     elif [[ $DISTRO == "arch" || $DISTRO == "manjaro" ]]; then
         $SUDO pacman -Rns docker docker-compose --noconfirm >/dev/null 2>&1 || true
+
     elif [[ $DISTRO == "openSUSE" || $DISTRO == "sles" ]]; then
         $SUDO zypper remove -y docker docker-compose >/dev/null 2>&1 || true
+
     elif [[ $DISTRO == "alpine" ]]; then
         $SUDO apk del docker docker-compose >/dev/null 2>&1 || true
+
     else
         printf "  └ \033[31mX\033[0m Package removal not supported for '$DISTRO'.\n"
         printf "    You have to remove Docker manually.\n\n"
@@ -302,7 +322,7 @@ install_docker() {
         else
             printf "    └ \033[31mX\033[0m Unsupported Linux distribution: '$DISTRO'.\n"
             printf "      \033[36m?\033[0m You have to install Docker manually.\n\n"
-            printf "      Sorry : we can't go further :/ Exiting...\n\n"
+            printf "Sorry : we can't go further :/ Exiting...\n\n"
             exit 1
         fi
         
@@ -338,7 +358,7 @@ install_docker_compose_plugin() {
         else
             printf "    └ \033[31mX\033[0m Automatic installation of Docker Compose plugin is not supported for '$DISTRO'.\n"
             printf "    \033[36m?\033[0m You have to install it manually.\n\n"
-            printf "    Sorry : we can't go further :/ Exiting...\n\n"
+            printf "Sorry : we can't go further :/ Exiting...\n\n"
             exit 1
         fi
         
@@ -394,11 +414,11 @@ backup_previous_crcon() {
         printf "  └ \033[31m!\033[0m Previous CRCON installation found in \033[33m$HOME_DIR/hll_rcon_tool\033[0m\n"
 
         # Create a backup folder with the current date in its name, so there could be several backups
-        BACKUP_FOLDER="$HOME_DIR/previous_crcon_installation_$(date '+%Y-%m-%d_%Hh%M')"
+        BACKUP_FOLDER="$HOME_DIR/crcon_backup_$(date '+%Y-%m-%d_%Hh%M')"
         if [[ -d "$BACKUP_FOLDER" ]]; then
             printf "    └ \033[31m!\033[0m Previous backup folder found.\n"
         else
-            $SUDO mkdir $BACKUP_FOLDER
+            $SUDO mkdir "$BACKUP_FOLDER"
             printf "    └ \033[32mV\033[0m Backup folder created in \033[33m$BACKUP_FOLDER\033[0m\n"
         fi
 
@@ -428,6 +448,7 @@ backup_previous_crcon() {
         else
             printf "  └ \033[32mV\033[0m No previous database folder found.\n"
         fi
+
     else
         printf "└ \033[32mV\033[0m No previous CRCON installation found.\n"
     fi
@@ -455,7 +476,7 @@ validate_input_port() {
 
 # Prompt for user input and replace in the .env file
 setup_env_variables() {
-    # These will be automatically generated
+    # HLL_DB_PASSWORD and RCONWEB_API_SECRET will be automatically generated
     HLL_DB_PASSWORD=$(date +%s | sha256sum | base64 | head -c 32; echo)
     # Sleep time to avoid getting the same password twice
     sleep 2
@@ -526,7 +547,7 @@ configure_utc
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Check and install software requirements                   │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 
 install_git
 install_curl
@@ -536,7 +557,8 @@ install_docker_compose_plugin
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Backup previous CRCON config and data, then delete it     │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
+
 cleanup_crcon
 backup_previous_crcon
 
@@ -548,7 +570,7 @@ fi
 # Download CRCON
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Download CRCON                                            │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 
 printf "Cloning repo...\n"
 $SUDO git clone https://github.com/MarechJ/hll_rcon_tool.git >/dev/null 2>&1
@@ -564,7 +586,7 @@ $SUDO git checkout $(git tag -l --contains HEAD | tail -n1) >/dev/null 2>&1
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Set configuration files                                   │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 
 $SUDO cp docker-templates/one-server.yaml compose.yaml
 $SUDO cp default.env .env
@@ -573,7 +595,7 @@ setup_env_variables
 # Launching CRCON for the first time
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - CSRF and Scoreboard configuration                         │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 
 $SUDO docker compose up -d --remove-orphans
 printf "Giving some time to the CRCON Docker containers to be fully started and running...\n"
@@ -590,7 +612,7 @@ if [[ -n "$WAN_IP" ]]; then
     $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
     # update Scoreboard "public_scoreboard_url"
-    printf "Updating CRCON settings : set the WAN IP:public_port for public stats interface...\n"
+    printf "Updating CRCON settings : set public Scoreboard url...\n"
     SQL="UPDATE public.user_config SET value = jsonb_set(value, '{public_scoreboard_url}', '\"$PUBLIC_URL\"', true) WHERE key = '1_ScoreboardUserConfig';"
     $SUDO docker compose exec -it postgres psql -U rcon -c "$SQL"
 
@@ -611,17 +633,18 @@ fi
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Change \"admin\" password                                   │\n"
-printf "└─────────────────────────────────────────────────────────────────────────────┘\n"
+printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
 
 $SUDO docker compose exec -it backend_1 python3 rconweb/manage.py changepassword admin
 
 printf "\n┌─────────────────────────────────────────────────────────────────────────────┐\n"
 printf "│ CRCON installer - Done !                                                    │\n"
 printf "└─────────────────────────────────────────────────────────────────────────────┘\n\n"
+
 printf "\033[32mCRCON is installed and running !\033[0m\n\n"
 printf "Optional, but heavily recommended :\n"
 printf "  To enforce security and allow to finetune each user's permissions,\n"
-printf "  create new user(s) account(s) and delete (or disable) the default \"admin\" account.\n\n"
+printf "  you should create new user(s) account(s) and delete (or disable) the default \"admin\" account.\n\n"
 printf "  To do so, access the admin panel at \033[36mhttp://$WAN_IP:8010/admin\033[0m\n"
 printf "  The default login name is '\033[90madmin\033[0m', the password is the one you've just set.\n\n"
 printf "  You'll find a complete guide on how to manage users at \033[36mhttps://github.com/MarechJ/hll_rcon_tool/wiki/\033[0m\n\n"
