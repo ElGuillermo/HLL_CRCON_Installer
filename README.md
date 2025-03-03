@@ -3,12 +3,9 @@ Installs the latest Hell Let Loose (HLL) [CRCON](https://github.com/MarechJ/hll_
 
 ## Disclaimer
 
-This script must be run with caution on a host where user programs or scripts are already running,  
-as some system-wide software and settings will be updated.
-
-Any previous CRCON install will be DELETED.  
-Script will attempt to backup any found config files and database folder,  
-but that could fail, mostly if you have changed the default install paths.  
+- This script must be run with caution on a host where user programs or scripts are already running, as some system-wide software and settings will be updated.
+- Any previous CRCON install will be DELETED.
+- Script will attempt to backup any found config files and database folder, but that could fail, mostly if you have changed the default install paths.  
    
 > [!IMPORTANT]
 > Please make sure to backup any data you find valuable before proceeding.
